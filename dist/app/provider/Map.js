@@ -9,6 +9,16 @@ Ext.define("IM.provider.Map", {
         );
         return this[idx];
     },
+    setCoordinatesAll: function(newCoords, oldCoords){
+        this.geometry.setCoordinates(newCoords);
+        this.cables.forEach(function(cable){
+            var cablePoints = cable.geometry.getCoordinates();
+            var idx = cablePoints.findIndex(function(point){
+                return (point[0] == oldCoords[0] && point[1] == oldCoords[1])
+            });
+            if (idx > -1) cable.geometry.set(idx, newCoords);
+        })
+    },
     /**
      * Places a polyline on the map representing fiber cable of following type
      * E2, E8, E12 ..
@@ -30,23 +40,67 @@ Ext.define("IM.provider.Map", {
                 strokeWidth: cableDescription[type].strokeWidth,
                 editorMaxPoints: 999999,
                 editorMenuManager: function (items, e) {
+                    var coords = e.geometry.getCoordinates(),
+                        box = Ext.Array.findBy(polyline.boxes, function(item){
+                            if (item.index == e._index) return item.object;
+                        });
                     items.push({
-                        title: "Установить муфту",
-                        onClick: function (menu, item) {
-
-                            var coords = e.geometry.getCoordinates(),
-                                point = me.createPlacemark(coords, 'PON BOX');
-
-                            polyline.childs.push({placemark: point, index: e._index});
-                            me.container.fireEvent('objectModified', point, 'box')
-                        }
-                    },{
                         title: "Завершить редактирование",
                         onClick: function () {
                             polyline.editor.stopEditing();
                             me.container.fireEvent('objectModified', polyline, type)
                         }
                     });
+
+                    if (box) {
+                        items.push({
+                            title: "Удалить муфту",
+                            onClick: function (menu, item) {
+
+                            }
+                        },{
+                            title: "Отсоединить",
+                            onClick: function (menu, item) {
+                                var boxIdx = polyline.boxes.findIndex(function(item){
+                                    return (item.object.getId() == box.object.getId())
+                                });
+                                if (boxIdx > -1) polyline.boxes.splice(boxIdx, 1);
+
+                                var cableIdx = box.object.cables.findIndex(function(item){
+                                    return (item.getId() == polyline.getId())
+                                });
+                                if (cableIdx > -1) box.object.cables.splice(cableIdx, 1);
+                                debugger;
+
+                            }
+                        });
+                    } else {
+                        items.push({
+                            title: "Установить муфту",
+                            onClick: function (menu, item) {
+                                var point = me.createPlacemark(coords, 'PON BOX');
+
+                                polyline.boxes.push({object: point, index: e._index});
+                                point.cables = [polyline];
+                                me.container.fireEvent('objectModified', point, 'box');
+                            }
+                        },{
+                            title: "Присоединить",
+                            onClick: function () {
+
+                                var closestBox = ymaps.geoQuery(me.ymap.geoObjects)
+                                    .search('geometry.type == "Point"')
+                                    .searchIntersect(me.ymap)
+                                    .getClosestTo(coords);
+                                if (closestBox) {
+                                    closestBox.cables.push(polyline);
+                                    polyline.geometry.set(e._index, closestBox.geometry.getCoordinates());
+                                    polyline.boxes.push({object: closestBox, index: e._index});
+                                }
+                            }
+                        });
+                    }
+
                     return items;
                 }
             });
@@ -57,7 +111,7 @@ Ext.define("IM.provider.Map", {
 
         // Custom properties/methods
         polyline.getId = this.getId;
-        polyline.childs = [];
+        polyline.boxes = [];
 
         this.ymap.geoObjects.add(polyline);
         if (editable) {
@@ -78,14 +132,17 @@ Ext.define("IM.provider.Map", {
                 newCoords = event.newCoordinates,
                 oldCoords = event.oldCoordinates;
             if (newCoords.length == oldCoords.length){
-                polyline.childs.forEach(function(point){
-                    var coord = polyline.geometry.get(point.index);
-                    point.placemark.geometry.setCoordinates(coord);
+                polyline.boxes.forEach(function(point){
+                    if (newCoords[point.index][0] != oldCoords[point.index][0] || newCoords[point.index][1] != oldCoords[point.index][1]) {
+                        var coord = polyline.geometry.get(point.index);
+                        point.object.setCoordinatesAll(coord, oldCoords[point.index]);
+                    }
+
                 });
             } else {
-                polyline.childs.forEach(function(point){
+                polyline.boxes.forEach(function(point){
                     var index = newCoords.findIndex(function(lCoords){
-                        var pCoords = point.placemark.geometry.getCoordinates();
+                        var pCoords = point.object.geometry.getCoordinates();
                         return (pCoords[0] == lCoords[0] && pCoords[1] == lCoords[1])
                     });
                     point.index = index;
@@ -122,6 +179,7 @@ Ext.define("IM.provider.Map", {
             });
 
         point.getId = this.getId;
+        point.setCoordinatesAll = this.setCoordinatesAll;
         point.events.add('click', function(){
             me.container.fireEvent('objectSelected', point)
         }, {point: point, self: this});
