@@ -2,6 +2,8 @@ Ext.define("IM.provider.Map", {
     singleton: true,
     ymap: {},
     container: {},
+
+    // common methods
     getId: function(){
         var idx = Ext.Array.findBy(
             Ext.Object.getKeys(this),
@@ -9,6 +11,8 @@ Ext.define("IM.provider.Map", {
         );
         return this[idx];
     },
+
+    // box methods
     setCoordinatesAll: function(newCoords, oldCoords){
         this.geometry.setCoordinates(newCoords);
         this.cables.forEach(function(cable){
@@ -19,14 +23,56 @@ Ext.define("IM.provider.Map", {
             if (idx > -1) cable.geometry.set(idx, newCoords);
         })
     },
-    /**
-     * Places a polyline on the map representing fiber cable of following type
-     * E2, E8, E12 ..
-     *
-     * @param {Array} coords The coords if we restoring object state empty otherwise
-     * @param {String} type Variable number of parameters are passed to handlers.
-     * @param {Boolean} editable .
-     */
+
+    // cable methods
+    detach: function(box){
+        var cable = this,
+            boxIdx = cable.boxes.findIndex(function(item){
+                return (item.object.getId() == box.getId())
+            });
+        if (boxIdx > -1) cable.boxes.splice(boxIdx, 1);
+
+        var cableIdx = box.cables.findIndex(function(item){
+            return (item.getId() == cable.getId())
+        });
+        if (cableIdx > -1) box.cables.splice(cableIdx, 1);
+    },
+
+    attachToClosestBox: function(index, coords){
+        var polyline = this,
+            map = polyline.getMap(),
+            closestBox = ymaps.geoQuery(map.geoObjects).search('geometry.type == "Point"').searchIntersect(map).getClosestTo(coords);
+
+        if (closestBox) {
+            closestBox.cables.push(polyline);
+            polyline.geometry.set(index, closestBox.geometry.getCoordinates());
+            polyline.boxes.push({object: closestBox, index: index});
+        }
+    },
+
+    updateAttachedObjects: function(newCoords, oldCoords){
+        var polyline = this;
+
+        if (newCoords.length == oldCoords.length){
+            polyline.boxes.forEach(function(point){
+                if (newCoords[point.index][0] != oldCoords[point.index][0] || newCoords[point.index][1] != oldCoords[point.index][1]) {
+                    var coord = polyline.geometry.get(point.index);
+                    point.object.setCoordinatesAll(coord, oldCoords[point.index]);
+                }
+
+            });
+        } else {
+            polyline.boxes.forEach(function(point){
+                var index = newCoords.findIndex(function(lCoords){
+                    var pCoords = point.object.geometry.getCoordinates();
+                    return (pCoords[0] == lCoords[0] && pCoords[1] == lCoords[1])
+                });
+                point.index = index;
+            });
+        }
+
+    },
+
     createPolyline: function(coords, type, editable){
 
         var me = this,
@@ -61,17 +107,7 @@ Ext.define("IM.provider.Map", {
                         },{
                             title: "Отсоединить",
                             onClick: function (menu, item) {
-                                var boxIdx = polyline.boxes.findIndex(function(item){
-                                    return (item.object.getId() == box.object.getId())
-                                });
-                                if (boxIdx > -1) polyline.boxes.splice(boxIdx, 1);
-
-                                var cableIdx = box.object.cables.findIndex(function(item){
-                                    return (item.getId() == polyline.getId())
-                                });
-                                if (cableIdx > -1) box.object.cables.splice(cableIdx, 1);
-                                debugger;
-
+                                polyline.detach(box.object);
                             }
                         });
                     } else {
@@ -87,16 +123,7 @@ Ext.define("IM.provider.Map", {
                         },{
                             title: "Присоединить",
                             onClick: function () {
-
-                                var closestBox = ymaps.geoQuery(me.ymap.geoObjects)
-                                    .search('geometry.type == "Point"')
-                                    .searchIntersect(me.ymap)
-                                    .getClosestTo(coords);
-                                if (closestBox) {
-                                    closestBox.cables.push(polyline);
-                                    polyline.geometry.set(e._index, closestBox.geometry.getCoordinates());
-                                    polyline.boxes.push({object: closestBox, index: e._index});
-                                }
+                                polyline.attachToClosestBox(e._index, coords);
                             }
                         });
                     }
@@ -111,6 +138,9 @@ Ext.define("IM.provider.Map", {
 
         // Custom properties/methods
         polyline.getId = this.getId;
+        polyline.detach = this.detach;
+        polyline.attachToClosestBox = this.attachToClosestBox;
+        polyline.updateAttachedObjects = this.updateAttachedObjects;
         polyline.boxes = [];
 
         this.ymap.geoObjects.add(polyline);
@@ -131,25 +161,8 @@ Ext.define("IM.provider.Map", {
             var event = e.originalEvent.originalEvent.originalEvent,
                 newCoords = event.newCoordinates,
                 oldCoords = event.oldCoordinates;
-            if (newCoords.length == oldCoords.length){
-                polyline.boxes.forEach(function(point){
-                    if (newCoords[point.index][0] != oldCoords[point.index][0] || newCoords[point.index][1] != oldCoords[point.index][1]) {
-                        var coord = polyline.geometry.get(point.index);
-                        point.object.setCoordinatesAll(coord, oldCoords[point.index]);
-                    }
 
-                });
-            } else {
-                polyline.boxes.forEach(function(point){
-                    var index = newCoords.findIndex(function(lCoords){
-                        var pCoords = point.object.geometry.getCoordinates();
-                        return (pCoords[0] == lCoords[0] && pCoords[1] == lCoords[1])
-                    });
-                    point.index = index;
-                });
-            }
-
-
+            polyline.updateAttachedObjects(newCoords, oldCoords);
         }, {polyline: polyline, self: this});
 
 
