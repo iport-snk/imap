@@ -12,7 +12,6 @@ Ext.define('IM.view.ObjectList', {
         fields: [
             {name: 'type'},
             {name: 'name'},
-            {name: 'labels'},
             {name: 'geoObject'}
         ],
         autoLoad: false
@@ -23,13 +22,9 @@ Ext.define('IM.view.ObjectList', {
         menu: {
             items: [
                 { text: 'Кабель',   menu: {itemId: 'addFiber', items: [
-                    {text: 'E2', itemId: 'fiberE2'},
-                    {text: 'E8', itemId: 'fiberE8'},
-                    {text: 'E12', itemId: 'fiberE12'}
-                ]}},
-                { text: 'Муфта', menu: {itemId: 'addBox', items: [
-                    {text: 'FOSC', itemId: 'boxFox'},
-                    {text: 'Бокс', itemId: 'boxPon'}
+                    {text: 'E2', itemId: 'E2'},
+                    {text: 'E8', itemId: 'E8'},
+                    {text: 'E12', itemId: 'E12'}
                 ]}}
             ]
         }
@@ -40,23 +35,13 @@ Ext.define('IM.view.ObjectList', {
         disabled: true
     }],
     columns: [{
-        header: 'Тип',
+        header: 'Код',
+        dataIndex: 'id'
+    },{
+        header: 'Объект',
         dataIndex: 'type'
     },{
-        header: 'Название',
-        dataIndex: 'name',
-        editor: {
-            xtype: 'textfield',
-            allowBlank: false
-        }
-    },{
-        header: 'Метки',
-        dataIndex: 'labels',
-        flex: 1,
-        editor: {
-            xtype: 'textfield'
-        }
-
-
+        header: 'Тип',
+        dataIndex: 'name'
     }]
 });

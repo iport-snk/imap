@@ -7,9 +7,6 @@ Ext.define('IM.controller.ObjectList', {
         'ObjectList #addFiber' : {
             click: 'addFiber'
         },
-        'ObjectList #addBox' : {
-            click: 'addBox'
-        },
         'Map' : {
             objectModified: 'objectModified',
             objectSelected: 'objectSelected'
@@ -19,25 +16,25 @@ Ext.define('IM.controller.ObjectList', {
 
     objectSelected: function(geoObject) {
         var store = this.getGrid().store,
-            rec = store.findRecord('id', geoObject.getId());
+            rec = store.findRecord('id', geoObject.imap.id);
 
         this.getGrid().getView().focusRow(rec);
         this.getGrid().getSelectionModel().select(rec, false);
     },
 
-    objectModified: function(geoObject, type) {
+    objectModified: function(geoObject) {
 
         var store = this.getGrid().store,
-            rec = store.findRecord('id', geoObject.getId()),
+            rec = store.findRecord('id', geoObject.imap.id),
             editor = this.getGrid().editingPlugin;
 
         if (rec) {
             this.getGrid().getView().focusRow(rec);
             this.getGrid().getSelectionModel().select(rec, false);
         } else {
-            rec = store.add({id: geoObject.getId(), type: type, geoObject: geoObject, name: 'aaa'});
-            editor.cancelEdit();
-            editor.startEdit(rec[0]);
+            rec = store.add({id: geoObject.imap.id, type: geoObject.imap.type, name: geoObject.imap.name, geoObject: geoObject});
+            //editor.cancelEdit();
+            //editor.startEdit(rec[0]);
         }
 
     },

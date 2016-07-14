@@ -3,6 +3,12 @@ Ext.define("IM.provider.Map", {
     ymap: {},
     container: {},
 
+    newId: function(type, name){
+        return name + '.' + Ext.getStore('ObjectList').getData().filterBy(function(item){
+            return (item.get('type') == type && item.get('name') == name)
+        }).getCount()
+    },
+
     // common methods
     getId: function(){
         var idx = Ext.Array.findBy(
@@ -13,61 +19,70 @@ Ext.define("IM.provider.Map", {
     },
 
     // box methods
-    setCoordinatesAll: function(newCoords, oldCoords){
-        this.geometry.setCoordinates(newCoords);
-        this.cables.forEach(function(cable){
-            var cablePoints = cable.geometry.getCoordinates();
-            var idx = cablePoints.findIndex(function(point){
-                return (point[0] == oldCoords[0] && point[1] == oldCoords[1])
-            });
-            if (idx > -1) cable.geometry.set(idx, newCoords);
+    setCoordinatesAll: function(newCoords, originalObject){
+        var box = this;
+
+        box.geometry.setCoordinates(newCoords);
+        box.imap.cables.forEach(function(cable){
+            if (cable.imap.id == originalObject.imap.id) return;
+
+            var positions = [
+                {name: 'first', index: 0},
+                {name: 'last',  index: cable.geometry.getLength() - 1}
+            ];
+
+            positions.forEach(function(position){
+                var cableBox = cable.imap.boxes[position.name];
+                if (cableBox && cableBox.imap.id == box.imap.id) {
+                    cable.geometry.set(position.index, newCoords)
+                }
+            })
         })
     },
 
     // cable methods
     detach: function(box){
-        var cable = this,
-            boxIdx = cable.boxes.findIndex(function(item){
-                return (item.object.getId() == box.getId())
-            });
-        if (boxIdx > -1) cable.boxes.splice(boxIdx, 1);
+        var cable = this;
 
-        var cableIdx = box.cables.findIndex(function(item){
-            return (item.getId() == cable.getId())
+        ['first', 'last'].forEach(function(position){
+            if (cable.imap.boxes[position].id == box.imap.id) cable.imap.boxes[position] = null;
         });
-        if (cableIdx > -1) box.cables.splice(cableIdx, 1);
+
+        var cableIdx = box.imap.cables.findIndex(function(item){
+            return (item.imap.id == cable.imap.id)
+        });
+        if (cableIdx > -1) box.imap.cables.splice(cableIdx, 1);
     },
 
     attachToClosestBox: function(index, coords){
         var polyline = this,
             map = polyline.getMap(),
-            closestBox = ymaps.geoQuery(map.geoObjects).search('geometry.type == "Point"').searchIntersect(map).getClosestTo(coords);
+            closestBox = ymaps.geoQuery(map.geoObjects).search('geometry.type == "Point"').searchIntersect(map).getClosestTo(coords),
+            position = index == 0 ? 'first' : 'last';
 
         if (closestBox) {
-            closestBox.cables.push(polyline);
+            closestBox.imap.cables.push(polyline);
             polyline.geometry.set(index, closestBox.geometry.getCoordinates());
-            polyline.boxes.push({object: closestBox, index: index});
+            polyline.imap.boxes[position] = closestBox;
         }
     },
 
     updateAttachedObjects: function(newCoords, oldCoords){
-        var polyline = this;
+        var polyline = this,
+            positions = [
+                {name: 'first', index: 0},
+                {name: 'last',  index: polyline.geometry.getLength() - 1}
+            ];
 
         if (newCoords.length == oldCoords.length){
-            polyline.boxes.forEach(function(point){
-                if (newCoords[point.index][0] != oldCoords[point.index][0] || newCoords[point.index][1] != oldCoords[point.index][1]) {
-                    var coord = polyline.geometry.get(point.index);
-                    point.object.setCoordinatesAll(coord, oldCoords[point.index]);
+            positions.forEach(function(position){
+                if (newCoords[position.index][0] != oldCoords[position.index][0] || newCoords[position.index][1] != oldCoords[position.index][1]) {
+                    var box = polyline.imap.boxes[position.name];
+                    //if (newCoords[position.index][0] != oldCoords[position.index][0] || newCoords[position.index][1] != oldCoords[position.index][1]) {
+                    if (box) box.imap.setCoordinatesAll(newCoords[position.index], polyline);
                 }
 
-            });
-        } else {
-            polyline.boxes.forEach(function(point){
-                var index = newCoords.findIndex(function(lCoords){
-                    var pCoords = point.object.geometry.getCoordinates();
-                    return (pCoords[0] == lCoords[0] && pCoords[1] == lCoords[1])
-                });
-                point.index = index;
+
             });
         }
 
@@ -77,9 +92,9 @@ Ext.define("IM.provider.Map", {
 
         var me = this,
             cableDescription = {
-                fiberE2: {strokeColor: "#00000088", strokeWidth: 2},
-                fiberE8: {strokeColor: "#00000088", strokeWidth: 4},
-                fiberE12: {strokeColor: "#00000088", strokeWidth: 6}
+                E2: {strokeColor: "#00000088", strokeWidth: 2},
+                E8: {strokeColor: "#00000088", strokeWidth: 4},
+                E12: {strokeColor: "#00000088", strokeWidth: 6}
             },
             polyline = new ymaps.Polyline(coords, {}, {
                 strokeColor: cableDescription[type].strokeColor,
@@ -87,14 +102,14 @@ Ext.define("IM.provider.Map", {
                 editorMaxPoints: 999999,
                 editorMenuManager: function (items, e) {
                     var coords = e.geometry.getCoordinates(),
-                        box = Ext.Array.findBy(polyline.boxes, function(item){
+                        box = Ext.Array.findBy(polyline.imap.boxes, function(item){
                             if (item.index == e._index) return item.object;
                         });
                     items.push({
                         title: "Завершить редактирование",
                         onClick: function () {
                             polyline.editor.stopEditing();
-                            me.container.fireEvent('objectModified', polyline, type)
+                            me.container.fireEvent('objectModified', polyline)
                         }
                     });
 
@@ -107,23 +122,23 @@ Ext.define("IM.provider.Map", {
                         },{
                             title: "Отсоединить",
                             onClick: function (menu, item) {
-                                polyline.detach(box.object);
+                                polyline.imap.detach(box.object);
                             }
                         });
                     } else {
                         items.push({
                             title: "Установить муфту",
                             onClick: function (menu, item) {
-                                var point = me.createPlacemark(coords, 'PON BOX');
+                                var point = me.createPlacemark(coords, 'ODF', 'PON BOX', polyline),
+                                    boxPosition = e.index == 0 ? 'first': 'last';
 
-                                polyline.boxes.push({object: point, index: e._index});
-                                point.cables = [polyline];
-                                me.container.fireEvent('objectModified', point, 'box');
+                                polyline.imap.boxes[boxPosition] = point;
+                                me.container.fireEvent('objectModified', point);
                             }
                         },{
                             title: "Присоединить",
                             onClick: function () {
-                                polyline.attachToClosestBox(e._index, coords);
+                                polyline.imap.attachToClosestBox(e._index, coords);
                             }
                         });
                     }
@@ -137,11 +152,17 @@ Ext.define("IM.provider.Map", {
         }, {polyline: polyline, self: this});
 
         // Custom properties/methods
-        polyline.getId = this.getId;
-        polyline.detach = this.detach;
-        polyline.attachToClosestBox = this.attachToClosestBox;
-        polyline.updateAttachedObjects = this.updateAttachedObjects;
-        polyline.boxes = [];
+        polyline.imap = {
+            id: me.newId('cable', type),
+            getId: this.getId.bind(polyline),
+            detach: this.detach.bind(polyline),
+            attachToClosestBox: this.attachToClosestBox.bind(polyline),
+            updateAttachedObjects: this.updateAttachedObjects.bind(polyline),
+            boxes: {first: null,last: null},
+            type: 'cable',
+            name: type
+        };
+
 
         this.ymap.geoObjects.add(polyline);
         if (editable) {
@@ -162,7 +183,7 @@ Ext.define("IM.provider.Map", {
                 newCoords = event.newCoordinates,
                 oldCoords = event.oldCoordinates;
 
-            polyline.updateAttachedObjects(newCoords, oldCoords);
+            polyline.imap.updateAttachedObjects(newCoords, oldCoords);
         }, {polyline: polyline, self: this});
 
 
@@ -183,7 +204,7 @@ Ext.define("IM.provider.Map", {
 
         return polyline;
     },
-    createPlacemark: function(coords, caption) {
+    createPlacemark: function(coords, type, caption, polyline) {
         var me = this,
             point = new ymaps.Placemark(coords, {
                 iconContent: caption
@@ -191,8 +212,15 @@ Ext.define("IM.provider.Map", {
                 preset: 'islands#blueStretchyIcon'
             });
 
-        point.getId = this.getId;
-        point.setCoordinatesAll = this.setCoordinatesAll;
+        point.imap = {
+            getId: this.getId.bind(point),
+            setCoordinatesAll: this.setCoordinatesAll.bind(point),
+            id: me.newId('box', type),
+            type: 'box',
+            name: type,
+            cables: [polyline]
+        };
+
         point.events.add('click', function(){
             me.container.fireEvent('objectSelected', point)
         }, {point: point, self: this});

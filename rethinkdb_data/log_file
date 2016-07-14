@@ -161,3 +161,6 @@
 2016-07-13T10:19:59.970262901 4.158862s info: Table 5f166851-468b-4040-85c5-8c3d0d9fac3d: This server is Raft leader for term 6. Latest log index is 15.
 2016-07-13T10:19:59.970262902 4.158998s info: Table d2fb8b8c-a1a0-4778-923c-def1f806aefb: This server is Raft leader for term 6. Latest log index is 20.
 2016-07-13T10:19:59.970262903 4.159150s info: Table 654c521d-3cf2-476b-86dd-166370bcc7e1: This server is Raft leader for term 6. Latest log index is 16.
+2016-07-14T10:20:10.376939400 86414.720025s error: worker process failed to resynchronize with main process
+2016-07-14T10:20:10.438945600 86414.781995s warn: failed to kill worker process: Access is denied.
+2016-07-14T10:20:10.438945601 86414.782009s warn: Problem when checking for new versions of RethinkDB: HTTP request to update.rethinkdb.com failed.
