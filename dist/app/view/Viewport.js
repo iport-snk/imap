@@ -3,7 +3,8 @@ Ext.define('IM.view.Viewport', {
     requires:[
         'Ext.tab.Panel',
         'Ext.layout.container.Border',
-        'IM.view.ObjectList'
+        'IM.view.ObjectList',
+        'IM.view.ODF'
     ],
 
     layout: {
@@ -24,19 +25,24 @@ Ext.define('IM.view.Viewport', {
     },{
         region: 'west',
         split: true,
-        layout: 'card',
+        layout: {
+            type: 'vbox',
+            pack: 'start',
+            align: 'stretch'
+        },
         collapsible: true,
         xtype: 'panel',
         width: 400,
         items: [{
-            xtype: 'ObjectList'
+            xtype: 'ObjectList',
+            flex: 1
         },{
-            xtype: 'panel',
-            html: '<h1>editing</h1>'
+            xtype: 'ODF',
+            flex: 1
         }],
         listeners: {
             afterrender: function(panel){
-                panel.getLayout().setActiveItem(0);
+                //panel.getLayout().setActiveItem(0);
             }
         }
     }]

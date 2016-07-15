@@ -10,6 +10,9 @@ Ext.define('IM.controller.ObjectList', {
         'Map' : {
             objectModified: 'objectModified',
             objectSelected: 'objectSelected'
+        },
+        'ObjectList' : {
+            select: 'gridSelect'
         }
 
     },
@@ -40,5 +43,9 @@ Ext.define('IM.controller.ObjectList', {
     },
     addFiber: function(menu, item){
         IM.provider.Map.createPolyline([], item.itemId, true);
+    },
+
+    gridSelect: function(grid , record , index , eOpts ){
+
     }
 });
