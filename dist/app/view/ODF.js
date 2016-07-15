@@ -38,6 +38,16 @@ Ext.define('IM.view.ODF', {
             }
         }
     },{
+        xtype: 'actioncolumn',
+        width: 30,
+        sortable: false,
+        menuDisabled: true,
+        items: [{
+            iconCls: 'cell-editing-delete-row',
+            tooltip: 'Delete Plant',
+            scope: this
+        }]
+    },{
         header: 'Волокно',
         dataIndex: 'name_out',
         editor: {
@@ -53,5 +63,15 @@ Ext.define('IM.view.ODF', {
                 }
             }
         }
+    },{
+        xtype: 'actioncolumn',
+        width: 30,
+        sortable: false,
+        menuDisabled: true,
+        items: [{
+            iconCls: 'cell-editing-delete-row',
+            tooltip: 'Delete Plant',
+            scope: this
+        }]
     }]
 });

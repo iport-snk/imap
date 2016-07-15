@@ -38,9 +38,7 @@ Ext.define('IM.controller.ODF', {
             dataIndex = editor.activeColumn.dataIndex,
             odf = this.getObjectGrid().getSelection()[0];
 
-
         e.store.loadData(this.getFibers(odf.get('geoObject')));
-
         e.store.clearFilter();
         e.store.filterBy(function(item){
             var connected = {
@@ -58,11 +56,14 @@ Ext.define('IM.controller.ODF', {
         var editor = e.activeEditor.field,
             dataIndex = e.activeColumn.dataIndex,
             record = e.activeRecord,
-            sel = editor.findRecordByValue(args.value);
+            sel = editor.findRecordByValue(args.value),
+            cable = sel ? sel.get('cable') : null,
+            fiber = sel ? sel.get('fiber') : null;
+
         if (dataIndex == 'name_in') {
-            record.set({cable_in: sel.get('cable'), fiber_in: sel.get('fiber')})
-        } else {
-            record.set({cable_out: sel.get('cable'), fiber_out: sel.get('fiber')})
+            record.set({cable_in: cable, fiber_in: fiber})
+        } else if (dataIndex == 'name_out') {
+            record.set({cable_out: cable, fiber_out: fiber})
         }
     }
 });
