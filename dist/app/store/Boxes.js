@@ -2,6 +2,7 @@ Ext.define('IM.store.Boxes', {
     extend: 'Ext.data.Store',
     storeId: 'Boxes',
     fields: [
+        {name: 'mapId'},
         {name: 'box'},
         {name: 'cable_in'},
         {name: 'fiber_in'},

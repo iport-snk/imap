@@ -26,7 +26,12 @@ Ext.define('IM.controller.ODF', {
 
         odf.imap.cables.forEach(function(cable){
             for (var i = 1; i <= cable.imap.fibers; i++) {
-                fibers.push({box: odf.imap.id, cable: cable.imap.id, fiber: i, name: cable.imap.id + ' - ' +  i})
+                fibers.push({
+                    box: odf.imap.id,
+                    cable: cable.imap.id,
+                    fiber: i,
+                    name: cable.imap.id + ' - ' +  i
+                })
             }
         });
         return fibers;
@@ -35,20 +40,33 @@ Ext.define('IM.controller.ODF', {
     beforeEditorQuery: function(e){
         var editor = e.grid.editingPlugin,
             record = editor.activeRecord,
-            dataIndex = editor.activeColumn.dataIndex,
+            dataIndex = editor.activeColumn.dataIndex == 'name_in' ? 'in' : 'out',
             odf = this.getObjectGrid().getSelection()[0];
 
         e.store.loadData(this.getFibers(odf.get('geoObject')));
         e.store.clearFilter();
         e.store.filterBy(function(item){
             var connected = {
-                name_in: e.grid.store.findRecord('name_in', item.get('name')),
-                name_out: e.grid.store.findRecord('name_out', item.get('name'))
+                'in': e.grid.store.findBy(function(selectedItem){
+                    return ( selectedItem.get('cable_in') == item.get('cable') &&
+                        selectedItem.get('fiber_in') == item.get('fiber'))
+                }),
+                'out': e.grid.store.findBy(function(selectedItem){
+                    return ( selectedItem.get('cable_out') == item.get('cable') &&
+                        selectedItem.get('fiber_out') == item.get('fiber'))
+                })
             };
-            return (
-                (Ext.isEmpty(connected.name_in) && Ext.isEmpty(connected.name_out)) ||
-                (connected[dataIndex] && (connected[dataIndex].get(dataIndex) == record.get(dataIndex)))
-            );
+            if (connected.in == -1 && connected.out == -1) return true;
+
+
+            if (
+                e.grid.store.getAt(connected[dataIndex]) &&
+                (e.grid.store.getAt(connected[dataIndex]).get('cable_' + dataIndex) == record.get('cable_' + dataIndex)) &&
+                (e.grid.store.getAt(connected[dataIndex]).get('fiber_' + dataIndex) == record.get('fiber_' + dataIndex))
+            ) return true;
+
+            return false;
+
 
         });
     },

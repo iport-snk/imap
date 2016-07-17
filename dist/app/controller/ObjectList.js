@@ -42,7 +42,7 @@ Ext.define('IM.controller.ObjectList', {
 
     },
     addFiber: function(menu, item){
-        IM.provider.Map.createPolyline([], item.itemId, true);
+        IM.provider.Map.createPolyline([], {type:'cable', name: item.itemId}, true);
     },
 
     gridSelect: function(grid , record , index , eOpts ){

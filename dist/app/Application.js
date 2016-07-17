@@ -12,9 +12,16 @@ Ext.define('IM.Application', {
     ],
 
     models: [],
-    controllers: ['ObjectList', 'ODF'],
+    controllers: ['ObjectList', 'ODF', 'HZ'],
     stores: ['Fibers', 'Boxes'],
+    appProperty: 'app',
     launch: function () {
+        var hz = new Horizon();
+        this.hz = {
+            db: hz,
+            geoObjects: hz('GeoObjects'),
+            boxes: hz('Boxes')
+        };
         Ext.create('IM.view.Viewport');
     }
 });

@@ -39,6 +39,22 @@ Ext.define("IM.provider.Map", {
             })
         })
     },
+    resolveBox: function(objects) {
+        var box = this;
+        box.imap.cables = box.imap.cables.map(function(cable){
+            if (Ext.isObject(cable)) return cable;
+            if (Ext.isString(cable)) {
+                var idx = objects.findIndex(function(dbItem){
+                    return (dbItem.id == cable)
+                });
+                if (idx > -1) {
+                    return objects[idx].geoObject;
+                } else {
+                    return cable;
+                }
+            }
+        })
+    },
 
     // cable methods
     detach: function(box, position){
@@ -86,7 +102,41 @@ Ext.define("IM.provider.Map", {
 
     },
 
-    createPolyline: function(coords, type, editable){
+    resolveCable: function(objects) {
+        var cable = this;
+        Object.keys(cable.imap.boxes).forEach(function(k){
+            var box = cable.imap.boxes[k];
+            if (Ext.isObject(box)) cable.imap.boxes[k] = box;
+            if (Ext.isString(box)) {
+                var idx = objects.findIndex(function(dbItem){
+                    return (dbItem.id == box)
+                });
+                if (idx > -1) {
+                    cable.imap.boxes[k] = objects[idx].geoObject;
+                } else {
+                    cable.imap.boxes[k] = cable;
+                }
+            }
+        });
+
+    },
+    createObject: function(item){
+        if (item.type == 'box') {
+            return IM.provider.Map.createPlacemark(
+                item.coordinates,
+                {id: item.id, type: item.type, name: item.name, cables: item.cables}
+
+            )
+        } else if (item.type == 'cable') {
+            return IM.provider.Map.createPolyline(
+                item.coordinates,
+                {id: item.id, type: item.type, name: item.name, fibers: item.fibers, boxes: item.boxes},
+                false
+            );
+        }
+    },
+
+    createPolyline: function(coords, config, editable){
 
         var me = this,
             cableDescription = {
@@ -95,8 +145,8 @@ Ext.define("IM.provider.Map", {
                 E12: {strokeColor: "#00000088", strokeWidth: 6, fibers: 12}
             },
             polyline = new ymaps.Polyline(coords, {}, {
-                strokeColor: cableDescription[type].strokeColor,
-                strokeWidth: cableDescription[type].strokeWidth,
+                strokeColor: cableDescription[config.name].strokeColor,
+                strokeWidth: cableDescription[config.name].strokeWidth,
                 editorMaxPoints: 999999,
                 editorMenuManager: function (items, e) {
                     var coords = e.geometry.getCoordinates(),
@@ -126,7 +176,10 @@ Ext.define("IM.provider.Map", {
                         items.push({
                             title: "Установить муфту",
                             onClick: function (menu, item) {
-                                var point = me.createPlacemark(coords, 'ODF', polyline),
+                                var point = me.createPlacemark(
+                                        coords,
+                                        {type:'box', name: 'ODF', cables: [polyline]}
+                                    ),
                                     boxPosition = e._index == 0 ? 'first': 'last';
 
                                 polyline.imap.boxes[boxPosition] = point;
@@ -149,17 +202,18 @@ Ext.define("IM.provider.Map", {
         }, {polyline: polyline, self: this});
 
         // Custom properties/methods
-        polyline.imap = {
-            id: me.newId('cable', type),
+        polyline.imap = config;
+        Ext.applyIf(polyline.imap, {
+            id: me.newId(config.type, config.name),
             getId: this.getId.bind(polyline),
             detach: this.detach.bind(polyline),
             attachToClosestBox: this.attachToClosestBox.bind(polyline),
             updateAttachedObjects: this.updateAttachedObjects.bind(polyline),
+            resolveDependencies: this.resolveCable.bind(polyline),
             boxes: {first: null,last: null},
-            type: 'cable',
-            fibers: cableDescription[type].fibers,
-            name: type
-        };
+            fibers: cableDescription[config.name].fibers
+        });
+
 
 
         this.ymap.geoObjects.add(polyline);
@@ -202,23 +256,21 @@ Ext.define("IM.provider.Map", {
 
         return polyline;
     },
-    createPlacemark: function(coords, type, polyline) {
+    createPlacemark: function(coords, config) {
+        config.id = config.id || this.newId(config.type, config.name);
         var me = this,
-            id = me.newId('box', type),
             point = new ymaps.Placemark(coords, {
-                iconContent: id
+                iconContent: config.id
             }, {
                 preset: 'islands#blueStretchyIcon'
             });
 
-        point.imap = {
+        point.imap = config;
+        Ext.applyIf(point.imap, {
             getId: this.getId.bind(point),
             setCoordinatesAll: this.setCoordinatesAll.bind(point),
-            id: id,
-            type: 'box',
-            name: type,
-            cables: [polyline]
-        };
+            resolveDependencies: this.resolveBox.bind(point)
+        });
 
         point.events.add('click', function(){
             me.container.fireEvent('objectSelected', point)

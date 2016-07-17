@@ -1,6 +1,9 @@
 Ext.define('IM.view.ODF', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.ODF',
+    selModel: {
+        mode: 'SINGLE'
+    },
     forceFit: true,
     plugins: Ext.create('Ext.grid.plugin.CellEditing', {
         clicksToEdit: 1,
@@ -24,6 +27,11 @@ Ext.define('IM.view.ODF', {
     columns: [{
         header: 'Волокно',
         dataIndex: 'name_in',
+        renderer: function(value, metaData, record, rowIndex, colIndex) {
+            if (record.get('cable_in')){
+                return record.get('cable_in') + ' - ' + record.get('fiber_in');
+            } else return '';
+        },
         editor: {
             xtype: 'combo',
             store: 'Fibers',
@@ -43,13 +51,18 @@ Ext.define('IM.view.ODF', {
         sortable: false,
         menuDisabled: true,
         items: [{
-            iconCls: 'cell-editing-delete-row',
+            iconCls: 'fa fa-lightbulb-o',
             tooltip: 'Delete Plant',
             scope: this
         }]
     },{
         header: 'Волокно',
         dataIndex: 'name_out',
+        renderer: function(value, metaData, record, rowIndex, colIndex) {
+            if (record.get('cable_out')){
+                return record.get('cable_out') + ' - ' + record.get('fiber_out');
+            } else return '';
+        },
         editor: {
             xtype: 'combo',
             store: 'Fibers',
@@ -69,7 +82,7 @@ Ext.define('IM.view.ODF', {
         sortable: false,
         menuDisabled: true,
         items: [{
-            iconCls: 'cell-editing-delete-row',
+            iconCls: 'fa fa-lightbulb-o',
             tooltip: 'Delete Plant',
             scope: this
         }]

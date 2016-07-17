@@ -167,3 +167,120 @@
 2016-07-15T10:20:02.983033000 172809.009652s error: worker process failed to resynchronize with main process
 2016-07-15T10:20:02.984033000 172809.009745s warn: failed to kill worker process: Access is denied.
 2016-07-15T10:20:02.987033000 172809.012907s warn: Problem when checking for new versions of RethinkDB: HTTP request to update.rethinkdb.com failed.
+2016-07-16T08:51:37.102659800 0.016748s notice: Running rethinkdb 2.3.3-windows (MSC 190023506)...
+2016-07-16T08:51:37.103659500 0.016903s notice: Running on 6.2.9200 (Windows 8, Server 2012)
+2016-07-16T08:51:37.103659501 0.016938s notice: Loading data from directory C:\\Users\\Oleg\\Projects\\Iport\\imap-gh\\imap\\rethinkdb_data
+2016-07-16T08:51:37.131685600 0.045067s info: Cache size is set to 200 MB
+2016-07-16T08:51:37.131685601 0.045080s warn: Cache size does not leave much memory for server and query overhead (available memory: 669 MB).
+2016-07-16T08:51:37.140692700 0.053839s notice: Listening for intracluster connections on port 54764
+2016-07-16T08:51:37.222987200 0.136778s notice: Listening for client driver connections on port 54765
+2016-07-16T08:51:37.222987201 0.137081s notice: Listening for administrative HTTP connections on port 54766
+2016-07-16T08:51:37.222987202 0.137109s notice: Listening on cluster address: 127.0.0.1
+2016-07-16T08:51:37.222987203 0.137110s notice: Listening on driver address: 127.0.0.1
+2016-07-16T08:51:37.222987204 0.137112s notice: Listening on http address: 127.0.0.1
+2016-07-16T08:51:37.222987205 0.137113s notice: To fully expose RethinkDB on the network, bind to all addresses by running rethinkdb with the `--bind all` command line option.
+2016-07-16T08:51:37.222987206 0.137115s notice: Server ready, "W01BA5K4_xzn" 332c106f-4745-4f46-8105-95dbbd8f34bc
+2016-07-16T08:51:38.548718200 1.462075s info: Table d2fb8b8c-a1a0-4778-923c-def1f806aefb: Starting a new Raft election for term 7.
+2016-07-16T08:51:38.551218500 1.467700s info: Table d2fb8b8c-a1a0-4778-923c-def1f806aefb: This server is Raft leader for term 7. Latest log index is 24.
+2016-07-16T08:51:38.804409300 1.717772s error: worker process failed to resynchronize with main process
+2016-07-16T08:51:38.804409301 1.717783s warn: failed to kill worker process: Access is denied.
+2016-07-16T08:51:38.804409302 1.717787s notice: A newer version of the RethinkDB server is available: 2.3.4. You can read the changelog at <https://github.com/rethinkdb/rethinkdb/releases>.
+2016-07-16T08:51:38.937030900 1.850326s info: Table 8e2aadc9-b69c-4efd-a465-311c1f5d6ce4: Starting a new Raft election for term 7.
+2016-07-16T08:51:38.942035500 1.855671s info: Table 8e2aadc9-b69c-4efd-a465-311c1f5d6ce4: This server is Raft leader for term 7. Latest log index is 18.
+2016-07-16T08:51:38.963739600 1.877135s info: Table 654c521d-3cf2-476b-86dd-166370bcc7e1: Starting a new Raft election for term 7.
+2016-07-16T08:51:38.968818900 1.882028s info: Table 654c521d-3cf2-476b-86dd-166370bcc7e1: This server is Raft leader for term 7. Latest log index is 19.
+2016-07-16T08:51:39.118472900 2.031852s info: Table 5f166851-468b-4040-85c5-8c3d0d9fac3d: Starting a new Raft election for term 7.
+2016-07-16T08:51:39.128573700 2.041859s info: Table 5f166851-468b-4040-85c5-8c3d0d9fac3d: This server is Raft leader for term 7. Latest log index is 18.
+2016-07-16T09:02:08.094398400 631.007731s notice: Server got Control-C; shutting down...
+2016-07-16T09:02:08.097901200 631.011082s notice: Shutting down client connections...
+2016-07-16T09:02:08.111408200 631.024788s notice: All client connections closed.
+2016-07-16T09:02:08.111408201 631.024801s notice: Shutting down storage engine... (This may take a while if you had a lot of unflushed data in the writeback cache.)
+2016-07-16T09:02:08.138428100 631.051778s notice: Storage engine shut down.
+2016-07-16T09:02:14.596423600 0.010611s notice: Running rethinkdb 2.3.3-windows (MSC 190023506)...
+2016-07-16T09:02:14.596423601 0.010725s notice: Running on 6.2.9200 (Windows 8, Server 2012)
+2016-07-16T09:02:14.596423602 0.010753s notice: Loading data from directory C:\\Users\\Oleg\\Projects\\Iport\\imap-gh\\imap\\rethinkdb_data
+2016-07-16T09:02:14.632312100 0.046495s info: Cache size is set to 200 MB
+2016-07-16T09:02:14.634314000 0.048853s notice: Listening for intracluster connections on port 54857
+2016-07-16T09:02:14.682347800 0.096656s notice: Listening for client driver connections on port 54858
+2016-07-16T09:02:14.682347801 0.096845s notice: Listening for administrative HTTP connections on port 54859
+2016-07-16T09:02:14.682848600 0.096969s notice: Listening on cluster address: 127.0.0.1
+2016-07-16T09:02:14.682848601 0.096972s notice: Listening on driver address: 127.0.0.1
+2016-07-16T09:02:14.682848602 0.096974s notice: Listening on http address: 127.0.0.1
+2016-07-16T09:02:14.682848603 0.096975s notice: To fully expose RethinkDB on the network, bind to all addresses by running rethinkdb with the `--bind all` command line option.
+2016-07-16T09:02:14.682848604 0.096977s notice: Server ready, "W01BA5K4_xzn" 332c106f-4745-4f46-8105-95dbbd8f34bc
+2016-07-16T09:02:15.669923300 1.084268s info: Table 5f166851-468b-4040-85c5-8c3d0d9fac3d: Starting a new Raft election for term 8.
+2016-07-16T09:02:15.677526700 1.091957s info: Table 5f166851-468b-4040-85c5-8c3d0d9fac3d: This server is Raft leader for term 8. Latest log index is 21.
+2016-07-16T09:02:15.768421400 1.182821s info: Table d2fb8b8c-a1a0-4778-923c-def1f806aefb: Starting a new Raft election for term 8.
+2016-07-16T09:02:15.773966200 1.188508s info: Table d2fb8b8c-a1a0-4778-923c-def1f806aefb: This server is Raft leader for term 8. Latest log index is 28.
+2016-07-16T09:02:15.863220000 1.277534s info: Table 8e2aadc9-b69c-4efd-a465-311c1f5d6ce4: Starting a new Raft election for term 8.
+2016-07-16T09:02:15.868209000 1.282658s info: Table 8e2aadc9-b69c-4efd-a465-311c1f5d6ce4: This server is Raft leader for term 8. Latest log index is 21.
+2016-07-16T09:02:16.374232900 1.788787s info: Table 654c521d-3cf2-476b-86dd-166370bcc7e1: Starting a new Raft election for term 8.
+2016-07-16T09:02:16.380731900 1.795251s info: Table 654c521d-3cf2-476b-86dd-166370bcc7e1: This server is Raft leader for term 8. Latest log index is 22.
+2016-07-16T09:02:16.412253400 1.826708s error: worker process failed to resynchronize with main process
+2016-07-16T09:02:16.412253401 1.826718s warn: failed to kill worker process: Access is denied.
+2016-07-16T09:02:16.412253402 1.826721s notice: A newer version of the RethinkDB server is available: 2.3.4. You can read the changelog at <https://github.com/rethinkdb/rethinkdb/releases>.
+2016-07-16T14:42:29.462285400 20414.876743s notice: Server got Control-C; shutting down...
+2016-07-16T14:42:29.465787800 20414.880053s notice: Shutting down client connections...
+2016-07-16T14:42:29.479797300 20414.893943s notice: All client connections closed.
+2016-07-16T14:42:29.479797301 20414.893963s notice: Shutting down storage engine... (This may take a while if you had a lot of unflushed data in the writeback cache.)
+2016-07-16T14:42:29.517824000 20414.932286s notice: Storage engine shut down.
+2016-07-16T16:28:04.170868800 0.018693s notice: Running rethinkdb 2.3.3-windows (MSC 190023506)...
+2016-07-16T16:28:04.172372200 0.019949s notice: Running on 6.2.9200 (Windows 8, Server 2012)
+2016-07-16T16:28:04.172372201 0.019988s notice: Loading data from directory C:\\Users\\Oleg\\Projects\\Iport\\imap-gh\\imap\\rethinkdb_data
+2016-07-16T16:28:04.210689200 0.058659s info: Cache size is set to 200 MB
+2016-07-16T16:28:04.210689201 0.058671s warn: Cache size does not leave much memory for server and query overhead (available memory: 910 MB).
+2016-07-16T16:28:04.218694500 0.066706s notice: Listening for intracluster connections on port 57671
+2016-07-16T16:28:04.312522100 0.160237s notice: Listening for client driver connections on port 57672
+2016-07-16T16:28:04.313021800 0.160780s notice: Listening for administrative HTTP connections on port 57673
+2016-07-16T16:28:04.313021801 0.160846s notice: Listening on cluster address: 127.0.0.1
+2016-07-16T16:28:04.313021802 0.160848s notice: Listening on driver address: 127.0.0.1
+2016-07-16T16:28:04.313021803 0.160850s notice: Listening on http address: 127.0.0.1
+2016-07-16T16:28:04.313021804 0.160851s notice: To fully expose RethinkDB on the network, bind to all addresses by running rethinkdb with the `--bind all` command line option.
+2016-07-16T16:28:04.313021805 0.160853s notice: Server ready, "W01BA5K4_xzn" 332c106f-4745-4f46-8105-95dbbd8f34bc
+2016-07-16T16:28:05.259168800 1.106960s error: worker process failed to resynchronize with main process
+2016-07-16T16:28:05.259168801 1.106992s warn: failed to kill worker process: Access is denied.
+2016-07-16T16:28:05.259168802 1.106999s notice: A newer version of the RethinkDB server is available: 2.3.4. You can read the changelog at <https://github.com/rethinkdb/rethinkdb/releases>.
+2016-07-16T16:28:05.663064700 1.510848s info: Table 5f166851-468b-4040-85c5-8c3d0d9fac3d: Starting a new Raft election for term 9.
+2016-07-16T16:28:05.668684700 1.516493s info: Table 5f166851-468b-4040-85c5-8c3d0d9fac3d: This server is Raft leader for term 9. Latest log index is 24.
+2016-07-16T16:28:05.730558500 1.578183s info: Table d2fb8b8c-a1a0-4778-923c-def1f806aefb: Starting a new Raft election for term 9.
+2016-07-16T16:28:05.735573400 1.583488s info: Table d2fb8b8c-a1a0-4778-923c-def1f806aefb: This server is Raft leader for term 9. Latest log index is 32.
+2016-07-16T16:28:05.936643300 1.784366s info: Table 654c521d-3cf2-476b-86dd-166370bcc7e1: Starting a new Raft election for term 9.
+2016-07-16T16:28:05.950459500 1.798315s info: Table 654c521d-3cf2-476b-86dd-166370bcc7e1: This server is Raft leader for term 9. Latest log index is 25.
+2016-07-16T16:28:06.257156700 2.104864s info: Table 8e2aadc9-b69c-4efd-a465-311c1f5d6ce4: Starting a new Raft election for term 9.
+2016-07-16T16:28:06.261157500 2.109092s info: Table 8e2aadc9-b69c-4efd-a465-311c1f5d6ce4: This server is Raft leader for term 9. Latest log index is 24.
+2016-07-16T22:54:49.069702200 23204.917647s info: Table 8f8c0570-0f5c-4a1d-925c-c967f184fa52: Starting a new Raft election for term 1.
+2016-07-16T22:54:49.072203700 23204.919819s info: Table 8f8c0570-0f5c-4a1d-925c-c967f184fa52: Added replica on this server.
+2016-07-16T22:54:49.077707500 23204.925394s info: Table 8f8c0570-0f5c-4a1d-925c-c967f184fa52: This server is Raft leader for term 1. Latest log index is 0.
+2016-07-17T10:06:11.809429400 0.056991s notice: Running rethinkdb 2.3.3-windows (MSC 190023506)...
+2016-07-17T10:06:11.814934000 0.062556s notice: Running on 6.2.9200 (Windows 8, Server 2012)
+2016-07-17T10:06:11.814934001 0.062650s notice: Loading data from directory C:\\Users\\Oleg\\Projects\\Iport\\imap-gh\\imap\\rethinkdb_data
+2016-07-17T10:06:11.885984400 0.133592s info: Cache size is set to 200 MB
+2016-07-17T10:06:11.885984401 0.133614s warn: Cache size does not leave much memory for server and query overhead (available memory: 837 MB).
+2016-07-17T10:06:11.909001000 0.156339s notice: Listening for intracluster connections on port 55442
+2016-07-17T10:06:12.248741700 0.496473s notice: Listening for client driver connections on port 55443
+2016-07-17T10:06:12.249742600 0.497196s notice: Listening for administrative HTTP connections on port 55444
+2016-07-17T10:06:12.249742601 0.497238s notice: Listening on cluster address: 127.0.0.1
+2016-07-17T10:06:12.249742602 0.497241s notice: Listening on driver address: 127.0.0.1
+2016-07-17T10:06:12.249742603 0.497243s notice: Listening on http address: 127.0.0.1
+2016-07-17T10:06:12.249742604 0.497245s notice: To fully expose RethinkDB on the network, bind to all addresses by running rethinkdb with the `--bind all` command line option.
+2016-07-17T10:06:12.249742605 0.497247s notice: Server ready, "W01BA5K4_xzn" 332c106f-4745-4f46-8105-95dbbd8f34bc
+2016-07-17T10:06:13.199937700 1.447286s info: Table 5f166851-468b-4040-85c5-8c3d0d9fac3d: Starting a new Raft election for term 10.
+2016-07-17T10:06:13.199937701 1.447642s info: Table 654c521d-3cf2-476b-86dd-166370bcc7e1: Starting a new Raft election for term 10.
+2016-07-17T10:06:13.222951800 1.470304s info: Table 5f166851-468b-4040-85c5-8c3d0d9fac3d: This server is Raft leader for term 10. Latest log index is 27.
+2016-07-17T10:06:13.255976400 1.503595s info: Table 654c521d-3cf2-476b-86dd-166370bcc7e1: This server is Raft leader for term 10. Latest log index is 28.
+2016-07-17T10:06:13.381065200 1.628337s error: worker process failed to resynchronize with main process
+2016-07-17T10:06:13.381065201 1.628360s warn: failed to kill worker process: Access is denied.
+2016-07-17T10:06:13.381065202 1.628367s notice: A newer version of the RethinkDB server is available: 2.3.4. You can read the changelog at <https://github.com/rethinkdb/rethinkdb/releases>.
+2016-07-17T10:06:13.653264400 1.900772s info: Table d2fb8b8c-a1a0-4778-923c-def1f806aefb: Starting a new Raft election for term 10.
+2016-07-17T10:06:13.661264000 1.908921s info: Table d2fb8b8c-a1a0-4778-923c-def1f806aefb: This server is Raft leader for term 10. Latest log index is 36.
+2016-07-17T10:06:13.754831300 2.002408s info: Table 8e2aadc9-b69c-4efd-a465-311c1f5d6ce4: Starting a new Raft election for term 10.
+2016-07-17T10:06:13.775345200 2.022707s info: Table 8e2aadc9-b69c-4efd-a465-311c1f5d6ce4: This server is Raft leader for term 10. Latest log index is 27.
+2016-07-17T10:06:13.998004300 2.245662s info: Table 8f8c0570-0f5c-4a1d-925c-c967f184fa52: Starting a new Raft election for term 2.
+2016-07-17T10:06:14.042536100 2.290267s info: Table 8f8c0570-0f5c-4a1d-925c-c967f184fa52: This server is Raft leader for term 2. Latest log index is 4.
+2016-07-17T19:07:41.402512300 32489.650161s info: Table a3876f30-e155-4657-8cb6-80a68fd57552: Starting a new Raft election for term 1.
+2016-07-17T19:07:41.403012800 32489.650710s info: Table a3876f30-e155-4657-8cb6-80a68fd57552: Added replica on this server.
+2016-07-17T19:07:41.414022000 32489.661666s info: Table a3876f30-e155-4657-8cb6-80a68fd57552: This server is Raft leader for term 1. Latest log index is 0.
+2016-07-17T19:36:36.185546700 34224.433272s info: Table 8f8c0570-0f5c-4a1d-925c-c967f184fa52: Configuration is changing.
+2016-07-17T19:36:36.185546701 34224.433716s info: Table a3876f30-e155-4657-8cb6-80a68fd57552: Configuration is changing.
+2016-07-17T22:57:12.090768600 46260.342969s notice: Server got Control-C; shutting down...
+2016-07-17T22:57:12.090768601 46260.345718s notice: Shutting down client connections...

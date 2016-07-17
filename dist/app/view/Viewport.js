@@ -23,23 +23,50 @@ Ext.define('IM.view.Viewport', {
 
         }]
     },{
+
         region: 'west',
         split: true,
+
+ /*       xtype: 'tabpanel',
+        tabBarHeaderPosition: 0,
+        titleAlign: 'right',
+        title: 'Maps',*/
+
+        collapsible: true,
         layout: {
             type: 'vbox',
             pack: 'start',
             align: 'stretch'
         },
-        collapsible: true,
-        xtype: 'panel',
+        header: {
+            itemPosition: 0,    // before panel title
+            //itemPosition: 1, // after panel title
+            //itemPosition: 2, // after pin tool
+            items: [{
+                xtype: 'button',
+                text: 'Сохранить',
+                itemId: 'btnSaveMap'
+            },{
+                xtype: 'button',
+                text: 'Загрузить',
+                margin: '0 0 0 20',
+                itemId: 'btnLoadMap'
+            }]
+        },
+
+
         width: 400,
-        items: [{
+
+
+        items:[{
             xtype: 'ObjectList',
             flex: 1
         },{
             xtype: 'ODF',
             flex: 1
         }],
+
+
         listeners: {
             afterrender: function(panel){
                 //panel.getLayout().setActiveItem(0);
