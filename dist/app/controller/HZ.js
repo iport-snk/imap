@@ -13,18 +13,37 @@ Ext.define('IM.controller.HZ', {
         }
 
     },
-    getObjects: function(mapId) {
+    getRevision: function(){
+        return new Ext.Promise(function (resolve, reject) {
+            IM.app.hz.revisions.store({
+                date: new Date(),
+                user: 'n/a'
+            }).subscribe(
+                // write
+                function(revision) {
+                    resolve(revision.id)
+                },
+                // error
+                function(err) {
+                    console.error(err)
+                }
+
+            )
+        })
+
+    },
+    getObjects: function(mapId, revisionId) {
         var store = Ext.getStore('ObjectList'),
             geoObjects = [];
         store.each(function(record){
             var gObj = record.get('geoObject'),
                 item = {
+                    mapId: mapId,
+                    revisionId: revisionId,
                     id: record.get('id'),
                     name: record.get('name'),
                     type: record.get('type'),
-                    coordinates: gObj.geometry.getCoordinates(),
-                    mapId: mapId
-
+                    coordinates: gObj.geometry.getCoordinates()
                 };
             if (item.type == 'cable') {
                 var fbox = gObj.imap.boxes.first ? gObj.imap.boxes.first.imap.id : null,
@@ -42,13 +61,13 @@ Ext.define('IM.controller.HZ', {
         });
         return geoObjects;
     },
-    getFibers: function(mapId) {
+    getFibers: function(mapId, revisionId) {
         var fibers = [];
         Ext.getStore('Boxes').getData().getSource().each(function(record){
             var data = record.getData();
             fibers.push({
                 mapId: mapId,
-                id: data.box + ':' + data.cable_in + ':' + data.fiber_in + ':' + data.cable_out + ':' + data.fiber_out,
+                revisionId: revisionId,
                 box: data.box,
                 cable_in: data.cable_in,
                 fiber_in: data.fiber_in,
@@ -59,23 +78,22 @@ Ext.define('IM.controller.HZ', {
         return fibers;
     },
     saveMap: function(){
-        var mapId = 'default';
-        var objects = this.getObjects(mapId),
-            fibers = this.getFibers(mapId);
+        var me = this;
+        this.getRevision().then(function(revisionId){
+            var mapId = 'default',
+                objects = me.getObjects(mapId, revisionId),
+                fibers = me.getFibers(mapId, revisionId);
 
+            IM.app.hz.geoObjects.upsert(objects);
+            IM.app.hz.boxes.upsert(fibers);
 
-        IM.app.hz.geoObjects.upsert(objects);
-
-
-        IM.app.hz.boxes.upsert(fibers);
-        debugger;
+        });
     },
-    loadGeoObjects: function(mapId) {
+    loadGeoObjects: function(mapId, revisionId) {
         var me = this;
 
-        IM.app.hz.geoObjects.findAll({mapId: mapId}).fetch().subscribe(
+        IM.app.hz.geoObjects.findAll({revisionId: revisionId}).fetch().subscribe(
             function(result) {
-                console.log(result);
                 result.forEach(function(item){
                     item.geoObject = IM.provider.Map.createObject(item);
                 });
@@ -90,10 +108,10 @@ Ext.define('IM.controller.HZ', {
             }
         )
     },
-    loadBoxFibers: function(mapId){
+    loadBoxFibers: function(mapId, revisionId){
         var me = this,
             store = Ext.getStore('Boxes');
-        IM.app.hz.boxes.findAll({mapId: mapId}).fetch().subscribe(
+        IM.app.hz.boxes.findAll({revisionId: revisionId}).fetch().subscribe(
             function(result) {
                 console.log(result);
                 result.forEach(function(data){
@@ -114,7 +132,16 @@ Ext.define('IM.controller.HZ', {
         )
     },
     loadMap: function(){
-        this.loadGeoObjects('default');
-        this.loadBoxFibers('default');
+        var me = this;
+        IM.app.hz.revisions.order("date", "descending").limit(1).fetch().subscribe(function(revisions){
+            if (revisions.length > 0){
+                var revId = revisions[0].id;
+                me.loadGeoObjects('default', revId);
+                me.loadBoxFibers('default', revId);
+            }
+        }, function(err){
+            debugger;
+        });
+
     }
 });

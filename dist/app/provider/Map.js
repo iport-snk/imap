@@ -136,13 +136,39 @@ Ext.define("IM.provider.Map", {
         }
     },
 
+    createFiber: function(coords, fiber) {
+        var colors = [
+            '#E7210D', // красный
+            '#008D44', // зеленый
+            '#004792', // голубой
+            '#FFCC00', // желтый
+            '#FFFFFF', // бедый
+            '#BFC1C3', // серый
+            '#9E3D1B', // коричневый
+            '#A095C2', // фиолетовый
+            '#F27C0D', // оранжевый
+            '#000000', // черный
+            '#F17FAC', // розовый
+            '#78C5D0' // аквамарин
+        ];
+
+
+
+        var polyline = new ymaps.Polyline(coords, {}, {
+            strokeColor: colors[fiber - 1] + "ff",
+            strokeWidth: 2
+        });
+        this.ymap.geoObjects.add(polyline);
+        return polyline;
+    },
+
     createPolyline: function(coords, config, editable){
 
         var me = this,
             cableDescription = {
-                E2: {strokeColor: "#00000088", strokeWidth: 2, fibers: 2},
-                E8: {strokeColor: "#00000088", strokeWidth: 4, fibers: 8},
-                E12: {strokeColor: "#00000088", strokeWidth: 6, fibers: 12}
+                E2: {strokeColor: "#00000040", strokeWidth: 6, fibers: 2},
+                E8: {strokeColor: "#00000040", strokeWidth: 8, fibers: 8},
+                E12: {strokeColor: "#00000040", strokeWidth: 12, fibers: 12}
             },
             polyline = new ymaps.Polyline(coords, {}, {
                 strokeColor: cableDescription[config.name].strokeColor,

@@ -6,6 +6,7 @@ Ext.define('IM.store.Boxes', {
         {name: 'box'},
         {name: 'cable_in'},
         {name: 'fiber_in'},
+        {name: 'channel'},
         {name: 'name_in'},
         {name: 'cable_out'},
         {name: 'fiber_out'},

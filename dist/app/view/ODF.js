@@ -29,7 +29,8 @@ Ext.define('IM.view.ODF', {
         dataIndex: 'name_in',
         renderer: function(value, metaData, record, rowIndex, colIndex) {
             if (record.get('cable_in')){
-                return record.get('cable_in') + ' - ' + record.get('fiber_in');
+                return '<i class="fa fa-circle fiber-color-' + record.get('fiber_in') + '" style="margin-right:5px;"></i>' +
+                    record.get('cable_in') + ' - ' + record.get('fiber_in');
             } else return '';
         },
         editor: {
@@ -38,6 +39,11 @@ Ext.define('IM.view.ODF', {
             queryMode: 'local',
             valueField: 'name',
             displayField: 'name',
+            listConfig: {
+                itemTpl: [
+                    '<i class="fa fa-circle fiber-color-{fiber}" style="margin-right:5px;"></i>{name}'
+                ]
+            },
             listeners: {
                 beforequery: function(e){
                     var grid = Ext.ComponentQuery.query('ODF')[0];
@@ -47,20 +53,26 @@ Ext.define('IM.view.ODF', {
         }
     },{
         xtype: 'actioncolumn',
-        width: 30,
+        width: 20,
         sortable: false,
         menuDisabled: true,
         items: [{
             iconCls: 'fa fa-lightbulb-o',
-            tooltip: 'Delete Plant',
-            scope: this
+            tooltip: 'Просветить',
+            handler: function(view, rowIndex, colIndex, item, e, record, row, action) {
+                view.grid.fireEvent('lightFiber', {
+                    direction: 'in',
+                    record: record
+                });
+            }
         }]
     },{
         header: 'Волокно',
         dataIndex: 'name_out',
         renderer: function(value, metaData, record, rowIndex, colIndex) {
             if (record.get('cable_out')){
-                return record.get('cable_out') + ' - ' + record.get('fiber_out');
+                return '<i class="fa fa-circle fiber-color-' + record.get('fiber_out') + '" style="margin-right:5px;"></i>' +
+                    record.get('cable_out') + ' - ' + record.get('fiber_out');
             } else return '';
         },
         editor: {
@@ -69,6 +81,11 @@ Ext.define('IM.view.ODF', {
             queryMode: 'local',
             valueField: 'name',
             displayField: 'name',
+            listConfig: {
+                itemTpl: [
+                    '<i class="fa fa-circle fiber-color-{fiber}" style="margin-right:5px;"></i>{name}'
+                ]
+            },
             listeners: {
                 beforequery: function(e){
                     var grid = Ext.ComponentQuery.query('ODF')[0];
@@ -78,13 +95,18 @@ Ext.define('IM.view.ODF', {
         }
     },{
         xtype: 'actioncolumn',
-        width: 30,
+        width: 20,
         sortable: false,
         menuDisabled: true,
         items: [{
             iconCls: 'fa fa-lightbulb-o',
-            tooltip: 'Delete Plant',
-            scope: this
+            tooltip: 'Просветить',
+            handler: function(view, rowIndex, colIndex, item, e, record, row, action) {
+                view.grid.fireEvent('lightFiber', {
+                    direction: 'out',
+                    record: record
+                });
+            }
         }]
     }]
 });

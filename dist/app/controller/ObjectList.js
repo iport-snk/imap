@@ -47,11 +47,15 @@ Ext.define('IM.controller.ObjectList', {
 
     gridSelect: function(grid , record , index , eOpts ){
         if (record.get('type') == 'box') {
-            var store = Ext.getStore('Boxes'),
+            var boxes = Ext.getStore('Boxes'),
+                splitters = Ext.getStore('Splitters'),
                 boxId = record.get('geoObject').imap.id;
 
-            store.clearFilter();
-            store.filter('box', boxId);
+            boxes.clearFilter();
+            boxes.filter('box', boxId);
+
+            splitters.clearFilter();
+            splitters.filter('box', boxId);
         }
 
     }

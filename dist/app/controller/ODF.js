@@ -10,8 +10,98 @@ Ext.define('IM.controller.ODF', {
         },
         'ODF' : {
             beforeEditorQuery: 'beforeEditorQuery',
-            edit: 'onCellEdit'
+            edit: 'onCellEdit',
+            lightFiber: 'onLightFiber'
         }
+
+    },
+
+    onLightFiber: function(e){
+        //var fibers = this.findConnectedFibers(e.record, e.direction);
+        //var lines = this.drawFibers(fibers);
+        var root = {
+            cable: e.record.get('cable_in'),
+            fiber: e.record.get('fiber_in')
+        };
+        for (var fiber of this.getChilds(root)) {
+            console.log(fiber);
+        }
+
+    },
+
+    drawFibers: function(fibers){
+        var store = Ext.getStore('ObjectList');
+        return fibers.map(function(fiber){
+            var cable = store.getDataSource().findBy(function(record) {
+                return (record.get('type') == 'cable' && record.get('id') == fiber.cable)
+            });
+            var coords = cable.get('geoObject').geometry.getCoordinates();
+            return IM.provider.Map.createFiber(coords, fiber.fiber);
+        });
+
+    },
+
+    findConnectedFibers: function(boxConnection, dir){
+        var fibers = [],
+            conn = boxConnection,
+            store = Ext.getStore('Boxes'),
+            direction = dir,
+            cable = conn.get('cable_' + direction),
+            fiber = conn.get('fiber_' + direction);
+
+        do {
+            fibers.push({cable: cable, fiber: fiber});
+            conn = store.getDataSource().findBy(function(record) {
+                return (
+                    (record.get('cable_in') == cable && record.get('fiber_in') == fiber) ||
+                    (record.get('cable_out') == cable && record.get('fiber_out') == fiber)
+                    ) && (conn.get('id') != record.get('id'));
+
+            });
+            if (conn) {
+                direction = conn.get('cable_in') == cable ? 'out' : 'in';
+                cable = conn.get('cable_' + direction);
+                fiber = conn.get('fiber_' + direction);
+            }
+        } while (conn && cable);
+        return fibers;
+    },
+
+    getChilds: function* (node){
+        var store = Ext.getStore('Boxes'),
+            me = this,
+            childs = [];
+
+        store.getDataSource().filterBy(function(item){
+            return ( item.get('cable_in') == node.cable &&
+                     item.get('fiber_in') == node.fiber)
+        }).each(function(item){
+            childs.push( {'cable' : item.get('cable_out'), 'fiber': item.get('fiber_out')});
+        });
+
+        for (var i = 0; i < childs.length; i++) {
+            if (childs[i].cable) {
+                yield childs[i];
+                yield *me.getChilds(childs[i]);
+            }
+
+        }
+
+        return;
+
+    },
+
+    loopBoxes: function* (box, cable, fiber, direction){
+        var store = Ext.getStore('Boxes'),
+            dir = direction,
+            cable = connection.get('cable_' + direction),
+            fiber = connection.get('fiber_' + direction);
+
+        yield {cable: cable, fiber: fiber};
+        do {
+
+        } while (conn && cable);
+        return;
 
     },
 
@@ -30,6 +120,7 @@ Ext.define('IM.controller.ODF', {
                     box: odf.imap.id,
                     cable: cable.imap.id,
                     fiber: i,
+                    channel: 1,
                     name: cable.imap.id + ' - ' +  i
                 })
             }
@@ -76,10 +167,11 @@ Ext.define('IM.controller.ODF', {
             record = e.activeRecord,
             sel = editor.findRecordByValue(args.value),
             cable = sel ? sel.get('cable') : null,
-            fiber = sel ? sel.get('fiber') : null;
+            fiber = sel ? sel.get('fiber') : null,
+            channel = sel ? sel.get('channel') : null;
 
         if (dataIndex == 'name_in') {
-            record.set({cable_in: cable, fiber_in: fiber})
+            record.set({cable_in: cable, fiber_in: fiber, channel: channel})
         } else if (dataIndex == 'name_out') {
             record.set({cable_out: cable, fiber_out: fiber})
         }

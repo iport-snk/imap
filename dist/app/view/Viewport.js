@@ -4,7 +4,8 @@ Ext.define('IM.view.Viewport', {
         'Ext.tab.Panel',
         'Ext.layout.container.Border',
         'IM.view.ObjectList',
-        'IM.view.ODF'
+        'IM.view.ODF',
+        'IM.view.Splitters'
     ],
 
     layout: {
@@ -62,7 +63,15 @@ Ext.define('IM.view.Viewport', {
             xtype: 'ObjectList',
             flex: 1
         },{
-            xtype: 'ODF',
+            xtype: 'tabpanel',
+            items: [{
+                title: 'Волокна',
+                xtype: 'ODF'
+            },{
+                title: 'Сплетеры',
+                xtype: 'Splitters'
+            }],
+
             flex: 1
         }],
 
