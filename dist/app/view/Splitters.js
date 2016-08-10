@@ -25,11 +25,9 @@ Ext.define('IM.view.Splitters', {
         editor: {
             xtype: 'combo',
             queryMode: 'local',
-            valueField: 'name',
-            store: Ext.create('Ext.data.Store', {
-                fields: []
-            }),
+            store: Ext.create('Ext.data.Store'),
             displayField: 'name',
+            valueField: 'name',
             listConfig: {
                 itemTpl: [
                     '<i class="fa fa-circle fiber-color-{fiber}" style="margin-right:5px;"></i>{name}'
@@ -43,11 +41,43 @@ Ext.define('IM.view.Splitters', {
             }
         }
     },{
-        header: 'Сплиттер',
-        dataIndex: 'splitter_type',
+        header: 'Каплер',
+        dataIndex: 'coupler',
         editor: {
             xtype: 'combo',
-            queryMode: 'local'
+            queryMode: 'local',
+            valueField: 'name',
+            displayField: 'name',
+            store: Ext.create('Ext.data.Store',{
+                fields: ['name'],
+                data: [
+                    {name: '100'},
+                    {name: '95/5'},
+                    {name: '90/10'},
+                    {name: '80/20'},
+                    {name: '70/30'}
+                ]
+            })
+        }
+    },{
+        header: 'Сплиттер',
+        dataIndex: 'splitter',
+        editor: {
+            xtype: 'combo',
+            queryMode: 'local',
+            valueField: 'name',
+            displayField: 'name',
+            store: Ext.create('Ext.data.Store',{
+                fields: ['name'],
+                data: [
+                    {name: '1/2'},
+                    {name: '1/4'},
+                    {name: '1/8'},
+                    {name: '1/16'},
+                    {name: '1/32'},
+                    {name: '1/64'}
+                ]
+            })
         }
     }]
 });

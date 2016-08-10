@@ -111,18 +111,25 @@ Ext.define('IM.controller.ODF', {
 
     },
 
-    getFibers: function(odf){
-        var fibers = [];
+    getFibers: function(odf, direction){
+        var fibers = [],
+            splitters = Ext.getStore('Splitters');
 
         odf.imap.cables.forEach(function(cable){
             for (var i = 1; i <= cable.imap.fibers; i++) {
-                fibers.push({
-                    box: odf.imap.id,
-                    cable: cable.imap.id,
-                    fiber: i,
-                    channel: 1,
-                    name: cable.imap.id + ' - ' +  i
-                })
+                var splitterIdx;
+                if (direction == 'in' && (splitterIdx = splitters.find() > -1) ) {
+
+                } else {
+                    fibers.push({
+                        box: odf.imap.id,
+                        cable: cable.imap.id,
+                        fiber: i,
+                        channel: 1,
+                        name: cable.imap.id + ' - ' +  i
+                    })
+                }
+
             }
         });
         return fibers;
@@ -134,7 +141,7 @@ Ext.define('IM.controller.ODF', {
             dataIndex = editor.activeColumn.dataIndex == 'name_in' ? 'in' : 'out',
             odf = this.getObjectGrid().getSelection()[0];
 
-        e.store.loadData(this.getFibers(odf.get('geoObject')));
+        e.store.loadData(this.getFibers(odf.get('geoObject'), dataIndex));
         e.store.clearFilter();
         e.store.filterBy(function(item){
             var connected = {

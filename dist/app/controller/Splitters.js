@@ -49,7 +49,13 @@ Ext.define('IM.controller.Splitters', {
             record = e.activeRecord,
             sel = editor.findRecordByValue(args.value);
 
-        //record.set({cable: cable, fiber: fiber, splitter_type: splitter_type})
+        if (dataIndex == 'name' && sel) {
+            record.set({cable: sel.get('cable'), fiber: sel.get('fiber')})
+        }
+        this.calcChannels(record);
+    },
 
+    calcChannels: function(record) {
+        debugger;
     }
 });

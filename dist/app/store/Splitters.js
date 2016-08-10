@@ -5,7 +5,8 @@ Ext.define('IM.store.Splitters', {
         {name: 'box'},
         {name: 'cable'},
         {name: 'fiber'},
-        {name: 'splitter_type'}
+        {name: 'coupler'},
+        {name: 'splitter'}
     ]
 
 });
