@@ -56,6 +56,26 @@ Ext.define('IM.controller.Splitters', {
     },
 
     calcChannels: function(record) {
-        debugger;
+
+        var splitter = record.get('splitter'),
+            coupler = record.get('coupler') || '0/100',
+            channels = [],
+            cnt = 1;
+        if (coupler != '0/100') {
+            channels.push({channel: cnt, name: cnt + ':' + coupler.split('/')[0]});
+            cnt++;
+        }
+        if (splitter) {
+            var outs = splitter.split('/')[1],
+                signal = coupler.split('/')[1];
+            for (var i = 0; i < outs; i++) {
+                channels.push({channel: cnt, name: cnt + ':' + signal + "/" + outs});
+                cnt++;
+            }
+
+        } else {
+            channels.push({channel: cnt, name: cnt + ':' + coupler.split('/')[1]});
+        }
+        record.set({channels: channels});
     }
 });

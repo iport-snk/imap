@@ -51,11 +51,12 @@ Ext.define('IM.view.Splitters', {
             store: Ext.create('Ext.data.Store',{
                 fields: ['name'],
                 data: [
-                    {name: '100'},
+                    {name: '0/100'},
                     {name: '95/5'},
                     {name: '90/10'},
                     {name: '80/20'},
-                    {name: '70/30'}
+                    {name: '70/30'},
+                    {name: '50/50'}
                 ]
             })
         }

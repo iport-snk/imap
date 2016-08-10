@@ -438,3 +438,57 @@
 2016-08-08T18:59:28.627501301 94760.524757s warn: failed to kill worker process: Access is denied.
 2016-08-09T20:03:58.050159700 185039.617343s error: worker process failed to resynchronize with main process
 2016-08-09T20:03:58.050159701 185039.617407s warn: failed to kill worker process: Access is denied.
+2016-08-10T14:58:17.843997100 0.374290s notice: Running rethinkdb 2.3.3-windows (MSC 190023506)...
+2016-08-10T14:58:17.859997100 0.390218s notice: Running on 6.1.7601 (Windows 7, Server 2008 R2)
+2016-08-10T14:58:17.862997100 0.393215s notice: Loading data from directory P:\\Projects\\Iport\\imap-gh\\rethinkdb_data
+2016-08-10T14:58:18.217997100 0.748185s info: Cache size is set to 200 MB
+2016-08-10T14:58:18.359997100 0.890330s notice: Listening for intracluster connections on port 51702
+2016-08-10T14:58:20.037997100 2.567801s notice: Listening for client driver connections on port 51703
+2016-08-10T14:58:20.038997100 2.568905s notice: Listening for administrative HTTP connections on port 51704
+2016-08-10T14:58:20.038997101 2.568976s notice: Listening on cluster address: 127.0.0.1
+2016-08-10T14:58:20.038997102 2.568979s notice: Listening on driver address: 127.0.0.1
+2016-08-10T14:58:20.038997103 2.568981s notice: Listening on http address: 127.0.0.1
+2016-08-10T14:58:20.038997104 2.568983s notice: To fully expose RethinkDB on the network, bind to all addresses by running rethinkdb with the `--bind all` command line option.
+2016-08-10T14:58:20.038997105 2.568985s notice: Server ready, "W01BA5K4_xzn" 332c106f-4745-4f46-8105-95dbbd8f34bc
+2016-08-10T14:58:20.387997100 2.918158s info: Table 091d113c-c7b4-45b6-9ec1-c59efba1734c: Starting a new Raft election for term 5.
+2016-08-10T14:58:20.392997100 2.923549s info: Table 654c521d-3cf2-476b-86dd-166370bcc7e1: Starting a new Raft election for term 15.
+2016-08-10T14:58:20.510997100 3.040832s info: Table 8e2aadc9-b69c-4efd-a465-311c1f5d6ce4: Starting a new Raft election for term 15.
+2016-08-10T14:58:20.511997100 3.041726s info: Table 5f166851-468b-4040-85c5-8c3d0d9fac3d: Starting a new Raft election for term 15.
+2016-08-10T14:58:20.646997100 3.177539s info: Table 091d113c-c7b4-45b6-9ec1-c59efba1734c: This server is Raft leader for term 5. Latest log index is 20.
+2016-08-10T14:58:20.877997100 3.407660s warn: WriteFile failed: The pipe is being closed.
+2016-08-10T14:58:20.877997101 3.407665s error: worker process failed to resynchronize with main process
+2016-08-10T14:58:20.877997102 3.407668s warn: failed to kill worker process: Access is denied.
+2016-08-10T14:58:20.877997103 3.407675s warn: Problem when checking for new versions of RethinkDB: HTTP request to update.rethinkdb.com failed.
+2016-08-10T14:58:20.880997100 3.410964s info: Table a3876f30-e155-4657-8cb6-80a68fd57552: Starting a new Raft election for term 6.
+2016-08-10T14:58:20.880997101 3.411003s info: Table 8f8c0570-0f5c-4a1d-925c-c967f184fa52: Starting a new Raft election for term 7.
+2016-08-10T14:58:21.149997100 3.680531s info: Table 654c521d-3cf2-476b-86dd-166370bcc7e1: This server is Raft leader for term 15. Latest log index is 43.
+2016-08-10T14:58:21.149997101 3.680643s info: Table 8e2aadc9-b69c-4efd-a465-311c1f5d6ce4: This server is Raft leader for term 15. Latest log index is 42.
+2016-08-10T14:58:21.297997100 3.828660s info: Table 5f166851-468b-4040-85c5-8c3d0d9fac3d: This server is Raft leader for term 15. Latest log index is 42.
+2016-08-10T14:58:21.298997100 3.828894s info: Table a3876f30-e155-4657-8cb6-80a68fd57552: This server is Raft leader for term 6. Latest log index is 25.
+2016-08-10T14:58:21.300997100 3.830862s info: Table 8f8c0570-0f5c-4a1d-925c-c967f184fa52: This server is Raft leader for term 7. Latest log index is 29.
+2016-08-10T14:58:21.482997100 4.013308s info: Table d2fb8b8c-a1a0-4778-923c-def1f806aefb: Starting a new Raft election for term 15.
+2016-08-10T14:58:21.514997100 4.045156s info: Table d2fb8b8c-a1a0-4778-923c-def1f806aefb: This server is Raft leader for term 15. Latest log index is 56.
+2016-08-10T14:58:21.580997100 4.111218s error: Ignoring missing branch `a2ce81d2-653f-4b59-930f-06b0238cf243`. This probably means that there is a bug in RethinkDB. Please report this at https://github.com/rethinkdb/rethinkdb/issues/
+2016-08-10T14:58:21.581997100 4.112348s error: Ignoring missing branch `a06cc287-2524-455b-8dc7-d88715d5d9bc`. This probably means that there is a bug in RethinkDB. Please report this at https://github.com/rethinkdb/rethinkdb/issues/
+2016-08-10T14:58:21.581997101 4.112361s error: Ignoring missing branch `54b0677b-3494-40ac-9b3a-7e83185b9bb4`. This probably means that there is a bug in RethinkDB. Please report this at https://github.com/rethinkdb/rethinkdb/issues/
+2016-08-10T14:58:21.581997102 4.112364s error: Ignoring missing branch `86aec3d1-8e83-48e4-bff4-d805d2cbd237`. This probably means that there is a bug in RethinkDB. Please report this at https://github.com/rethinkdb/rethinkdb/issues/
+2016-08-10T14:58:21.581997103 4.112367s error: Ignoring missing branch `09906515-7573-4131-aa64-48d676bdef87`. This probably means that there is a bug in RethinkDB. Please report this at https://github.com/rethinkdb/rethinkdb/issues/
+2016-08-10T14:58:21.581997104 4.112369s error: Ignoring missing branch `39416034-6893-4fea-be20-ecaa2586200a`. This probably means that there is a bug in RethinkDB. Please report this at https://github.com/rethinkdb/rethinkdb/issues/
+2016-08-10T14:58:21.581997105 4.112372s error: Ignoring missing branch `661bdc00-30f2-487e-92a4-3da62cc807fb`. This probably means that there is a bug in RethinkDB. Please report this at https://github.com/rethinkdb/rethinkdb/issues/
+2016-08-10T14:58:21.581997106 4.112375s error: Ignoring missing branch `50bfd9ab-cdf9-45c1-b3af-c3cb775d7c59`. This probably means that there is a bug in RethinkDB. Please report this at https://github.com/rethinkdb/rethinkdb/issues/
+2016-08-10T14:58:21.581997107 4.112539s error: Ignoring missing branch `7d152c5a-9c62-4a91-a9f0-3145dd071503`. This probably means that there is a bug in RethinkDB. Please report this at https://github.com/rethinkdb/rethinkdb/issues/
+2016-08-10T14:58:21.581997108 4.112546s error: Ignoring missing branch `b9742fc2-e1ff-4b46-9791-5289146a08e9`. This probably means that there is a bug in RethinkDB. Please report this at https://github.com/rethinkdb/rethinkdb/issues/
+2016-08-10T14:58:21.581997109 4.112549s error: Ignoring missing branch `3360c227-95e8-4a28-96f1-136b861d55c2`. This probably means that there is a bug in RethinkDB. Please report this at https://github.com/rethinkdb/rethinkdb/issues/
+2016-08-10T14:58:21.581997110 4.112551s error: Ignoring missing branch `f2b2dec0-5279-46df-a111-a729ed6aa3d3`. This probably means that there is a bug in RethinkDB. Please report this at https://github.com/rethinkdb/rethinkdb/issues/
+2016-08-10T14:58:21.581997111 4.112561s error: Ignoring missing branch `16558d0e-1f4e-4a1b-b610-790c63f0ff34`. This probably means that there is a bug in RethinkDB. Please report this at https://github.com/rethinkdb/rethinkdb/issues/
+2016-08-10T14:58:21.581997112 4.112564s error: Ignoring missing branch `b7a92403-2c12-497d-95b3-b7399506e439`. This probably means that there is a bug in RethinkDB. Please report this at https://github.com/rethinkdb/rethinkdb/issues/
+2016-08-10T14:58:21.581997113 4.112570s error: Ignoring missing branch `46c35a48-e4ab-4768-9dce-6a50c7fc33fd`. This probably means that there is a bug in RethinkDB. Please report this at https://github.com/rethinkdb/rethinkdb/issues/
+2016-08-10T14:58:21.581997114 4.112573s error: Ignoring missing branch `e8644c10-5ab8-4bce-9e01-887d6765fd0d`. This probably means that there is a bug in RethinkDB. Please report this at https://github.com/rethinkdb/rethinkdb/issues/
+2016-08-10T14:58:21.581997115 4.112657s error: Ignoring missing branch `5e69b798-bef4-4559-a72a-15ab582c97aa`. This probably means that there is a bug in RethinkDB. Please report this at https://github.com/rethinkdb/rethinkdb/issues/
+2016-08-10T14:58:21.581997116 4.112661s error: Ignoring missing branch `caee9185-5628-4226-9b9c-4fb2ca7ad920`. This probably means that there is a bug in RethinkDB. Please report this at https://github.com/rethinkdb/rethinkdb/issues/
+2016-08-10T14:58:21.582997100 4.112701s error: Ignoring missing branch `6d89878d-3f6b-44ce-8cc9-2e742f67893a`. This probably means that there is a bug in RethinkDB. Please report this at https://github.com/rethinkdb/rethinkdb/issues/
+2016-08-10T14:58:21.582997101 4.112705s error: Ignoring missing branch `4e463b65-598e-44e7-aeb7-3180a0bcf046`. This probably means that there is a bug in RethinkDB. Please report this at https://github.com/rethinkdb/rethinkdb/issues/
+2016-08-10T14:58:21.582997102 4.112709s error: Ignoring missing branch `b9e9383f-83bf-4315-86a7-bb70dbe28196`. This probably means that there is a bug in RethinkDB. Please report this at https://github.com/rethinkdb/rethinkdb/issues/
+2016-08-10T14:58:21.582997103 4.112711s error: Ignoring missing branch `531e9a7d-8b74-4730-a68a-d3ad73c55bfd`. This probably means that there is a bug in RethinkDB. Please report this at https://github.com/rethinkdb/rethinkdb/issues/
+2016-08-10T14:58:21.582997104 4.112718s error: Ignoring missing branch `f540c0ba-afad-4126-bfa3-82023050ed41`. This probably means that there is a bug in RethinkDB. Please report this at https://github.com/rethinkdb/rethinkdb/issues/
+2016-08-10T14:58:21.582997105 4.112721s error: Ignoring missing branch `9d34aa80-f6e3-4e48-babe-45c9fa0f6bc7`. This probably means that there is a bug in RethinkDB. Please report this at https://github.com/rethinkdb/rethinkdb/issues/
