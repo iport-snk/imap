@@ -117,8 +117,13 @@ Ext.define('IM.controller.ODF', {
 
         odf.imap.cables.forEach(function(cable){
             for (var i = 1; i <= cable.imap.fibers; i++) {
-                var splitterIdx;
-                if (direction == 'in' && (splitterIdx = splitters.find() > -1) ) {
+                var idx;
+                if (direction == 'in' && (idx = splitters.findBy(function(t){
+                    return (t.get('box') == odf.imap.id && t.get('cable') == cable.imap.id && t.get('fiber') == i)
+                })) > -1 ) {
+                    debugger;
+                    var channels = splitters.getAt(idx);
+
 
                 } else {
                     fibers.push({
