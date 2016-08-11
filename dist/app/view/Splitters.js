@@ -22,6 +22,10 @@ Ext.define('IM.view.Splitters', {
     columns: [{
         header: 'Волокно',
         dataIndex: 'name',
+        renderer: function(value, metaData, record, rowIndex, colIndex) {
+            return '<i class="fa fa-circle fiber-color-' + record.get('fiber') + '" style="margin-right:5px;"></i>' +
+                    record.get('cable') + ' - ' + record.get('fiber');
+        },
         editor: {
             xtype: 'combo',
             queryMode: 'local',

@@ -12,7 +12,7 @@ Ext.define('IM.Application', {
     ],
 
     models: [],
-    controllers: ['ObjectList', 'ODF', 'HZ', 'Splitters'],
+    controllers: ['ObjectList', 'Box', 'HZ', 'Splitters'],
     stores: ['Fibers', 'Boxes', 'Splitters'],
     appProperty: 'app',
     launch: function () {
@@ -21,6 +21,7 @@ Ext.define('IM.Application', {
             db: hz,
             geoObjects: hz('GeoObjects'),
             boxes: hz('Boxes'),
+            splitters: hz('Splitters'),
             revisions: hz('Revisions')
         };
         Ext.create('IM.view.Viewport');

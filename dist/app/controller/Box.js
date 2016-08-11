@@ -1,14 +1,14 @@
-Ext.define('IM.controller.ODF', {
+Ext.define('IM.controller.Box', {
     extend: 'Ext.app.Controller',
     refs: [
         {ref: 'ObjectGrid', selector: 'ObjectList'},
-        {ref: 'Grid', selector: 'ODF'}
+        {ref: 'Grid', selector: 'Box'}
     ],
     control: {
-        'ODF #addFiberConnection' : {
+        'Box #addFiberConnection' : {
             click: 'addFiberConnection'
         },
-        'ODF' : {
+        'Box' : {
             beforeEditorQuery: 'beforeEditorQuery',
             edit: 'onCellEdit',
             lightFiber: 'onLightFiber'
@@ -121,8 +121,17 @@ Ext.define('IM.controller.ODF', {
                 if (direction == 'in' && (idx = splitters.findBy(function(t){
                     return (t.get('box') == odf.imap.id && t.get('cable') == cable.imap.id && t.get('fiber') == i)
                 })) > -1 ) {
-                    debugger;
-                    var channels = splitters.getAt(idx);
+
+                    var channels = splitters.getAt(idx).get('channels');
+                    channels.forEach(function(channel){
+                        fibers.push({
+                            box: odf.imap.id,
+                            cable: cable.imap.id,
+                            fiber: i,
+                            channel: channel.channel,
+                            name: cable.imap.id + ' - ' +  i + '.' + channel.name
+                        })
+                    })
 
 
                 } else {
@@ -152,7 +161,8 @@ Ext.define('IM.controller.ODF', {
             var connected = {
                 'in': e.grid.store.findBy(function(selectedItem){
                     return ( selectedItem.get('cable_in') == item.get('cable') &&
-                        selectedItem.get('fiber_in') == item.get('fiber'))
+                        selectedItem.get('fiber_in') == item.get('fiber') &&
+                        selectedItem.get('channel') == item.get('channel'))
                 }),
                 'out': e.grid.store.findBy(function(selectedItem){
                     return ( selectedItem.get('cable_out') == item.get('cable') &&

@@ -204,7 +204,7 @@ Ext.define("IM.provider.Map", {
                             onClick: function (menu, item) {
                                 var point = me.createPlacemark(
                                         coords,
-                                        {type:'box', name: 'ODF', cables: [polyline]}
+                                        {type:'box', name: 'FC', cables: [polyline]}
                                     ),
                                     boxPosition = e._index == 0 ? 'first': 'last';
 

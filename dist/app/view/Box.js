@@ -1,6 +1,6 @@
-Ext.define('IM.view.ODF', {
+Ext.define('IM.view.Box', {
     extend: 'Ext.grid.Panel',
-    alias: 'widget.ODF',
+    alias: 'widget.Box',
     selModel: {
         mode: 'SINGLE'
     },
@@ -30,7 +30,7 @@ Ext.define('IM.view.ODF', {
         renderer: function(value, metaData, record, rowIndex, colIndex) {
             if (record.get('cable_in')){
                 return '<i class="fa fa-circle fiber-color-' + record.get('fiber_in') + '" style="margin-right:5px;"></i>' +
-                    record.get('cable_in') + ' - ' + record.get('fiber_in');
+                    record.get('name_in');
             } else return '';
         },
         editor: {
@@ -46,7 +46,7 @@ Ext.define('IM.view.ODF', {
             },
             listeners: {
                 beforequery: function(e){
-                    var grid = Ext.ComponentQuery.query('ODF')[0];
+                    var grid = Ext.ComponentQuery.query('Box')[0];
                     grid.fireEvent('beforeEditorQuery', {grid: grid, store: e.combo.store});
                 }
             }
@@ -88,7 +88,7 @@ Ext.define('IM.view.ODF', {
             },
             listeners: {
                 beforequery: function(e){
-                    var grid = Ext.ComponentQuery.query('ODF')[0];
+                    var grid = Ext.ComponentQuery.query('Box')[0];
                     grid.fireEvent('beforeEditorQuery', {grid: grid, store: e.combo.store});
                 }
             }

@@ -62,30 +62,52 @@ Ext.define('IM.controller.HZ', {
         return geoObjects;
     },
     getFibers: function(mapId, revisionId) {
-        var fibers = [];
+        var objs = [];
         Ext.getStore('Boxes').getData().getSource().each(function(record){
             var data = record.getData();
-            fibers.push({
+            objs.push({
                 mapId: mapId,
                 revisionId: revisionId,
                 box: data.box,
                 cable_in: data.cable_in,
                 fiber_in: data.fiber_in,
+                channel: data.channel,
+                name_in: data.name_in,
                 cable_out: data.cable_out,
-                fiber_out: data.fiber_out
+                fiber_out: data.fiber_out,
+                name_out: data.name_out
             })
         });
-        return fibers;
+        return objs;
+    },
+    getSplitters: function(mapId, revisionId) {
+        var objs = [];
+        Ext.getStore('Splitters').getData().getSource().each(function(record){
+            var data = record.getData();
+            objs.push({
+                mapId: mapId,
+                revisionId: revisionId,
+                box: data.box,
+                cable: data.cable,
+                fiber: data.fiber,
+                channels: data.channels,
+                coupler: data.coupler,
+                splitter: data.splitter
+            })
+        });
+        return objs;
     },
     saveMap: function(){
         var me = this;
         this.getRevision().then(function(revisionId){
             var mapId = 'default',
                 objects = me.getObjects(mapId, revisionId),
-                fibers = me.getFibers(mapId, revisionId);
+                fibers = me.getFibers(mapId, revisionId),
+                splitters = me.getSplitters(mapId, revisionId);
 
             IM.app.hz.geoObjects.upsert(objects);
             IM.app.hz.boxes.upsert(fibers);
+            IM.app.hz.splitters.upsert(splitters);
 
         });
     },
@@ -121,8 +143,35 @@ Ext.define('IM.controller.HZ', {
                         mapId: data.mapId,
                         cable_in: data.cable_in,
                         fiber_in: data.fiber_in,
+                        name_in: data.name_in,
+                        channel: data.channel,
                         cable_out: data.cable_out,
-                        fiber_out: data.fiber_out
+                        fiber_out: data.fiber_out,
+                        name_out: data.name_out
+                    });
+                });
+            },
+            function(err) {
+                console.log(err);
+            }
+        )
+    },
+    loadSplitters: function(mapId, revisionId){
+        var me = this,
+            store = Ext.getStore('Splitters');
+        IM.app.hz.splitters.findAll({revisionId: revisionId}).fetch().subscribe(
+            function(result) {
+                console.log(result);
+                result.forEach(function(data){
+                    store.add({
+                        id: data.id,
+                        box: data.box,
+                        mapId: data.mapId,
+                        cable: data.cable,
+                        fiber: data.fiber,
+                        channels: data.channels,
+                        coupler: data.coupler,
+                        splitter: data.splitter
                     });
                 });
             },
@@ -138,6 +187,7 @@ Ext.define('IM.controller.HZ', {
                 var revId = revisions[0].id;
                 me.loadGeoObjects('default', revId);
                 me.loadBoxFibers('default', revId);
+                me.loadSplitters('default', revId);
             }
         }, function(err){
             debugger;
