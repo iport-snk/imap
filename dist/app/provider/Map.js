@@ -218,6 +218,25 @@ Ext.define("IM.provider.Map", {
                             }
                         });
                     }
+                    if (e._next && e._prev) {
+                        items.push({
+                            title: "Разорвать",
+                            onClick: function (menu, item) {
+                                var a1 = polyline.geometry.getCoordinates().slice(0, e._index + 1),
+                                    a2 = polyline.geometry.getCoordinates().slice(e._index);
+                                polyline.geometry.setCoordinates(a1);
+
+                                var p2 = IM.provider.Map.createPolyline(
+                                    a2,
+                                    {type: 'cable', name: polyline.imap.name}, // fibers: item.fibers, boxes: item.boxes},
+                                    false
+                                );
+                                me.container.fireEvent('objectModified', p2)
+
+                                //me.splitCable();
+                            }
+                        });
+                    }
 
                     return items;
                 }
