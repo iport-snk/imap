@@ -223,7 +223,8 @@ Ext.define("IM.provider.Map", {
                             title: "Разорвать",
                             onClick: function (menu, item) {
                                 var a1 = polyline.geometry.getCoordinates().slice(0, e._index + 1),
-                                    a2 = polyline.geometry.getCoordinates().slice(e._index);
+                                    a2 = polyline.geometry.getCoordinates().slice(e._index),
+                                    lBox = polyline.imap.boxes['last'];
                                 polyline.geometry.setCoordinates(a1);
 
                                 var p2 = IM.provider.Map.createPolyline(
@@ -231,7 +232,22 @@ Ext.define("IM.provider.Map", {
                                     {type: 'cable', name: polyline.imap.name}, // fibers: item.fibers, boxes: item.boxes},
                                     false
                                 );
-                                me.container.fireEvent('objectModified', p2)
+
+                                var fBox = me.createPlacemark(
+                                    coords,
+                                    {type:'box', name: 'FC', cables: [polyline, p2]}
+                                );
+                                polyline.imap.boxes['last'] = fBox;
+                                
+
+                                //lBox.imap.cables.push(p2);
+                                var lineIdx = lBox.imap.cables.indexOf(polyline);
+                                lBox.imap.cables[lineIdx] = p2;
+                                p2.imap.boxes['last'] = lBox;
+                                p2.imap.boxes['first'] = fBox;
+
+                                me.container.fireEvent('objectModified', fBox);
+                                me.container.fireEvent('objectModified', p2);
 
                                 //me.splitCable();
                             }
