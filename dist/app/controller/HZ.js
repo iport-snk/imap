@@ -72,6 +72,7 @@ Ext.define('IM.controller.HZ', {
                 cable_in: data.cable_in,
                 fiber_in: data.fiber_in,
                 channel: data.channel,
+                channel_name: data.channel_name,
                 name_in: data.name_in,
                 cable_out: data.cable_out,
                 fiber_out: data.fiber_out,
@@ -145,6 +146,7 @@ Ext.define('IM.controller.HZ', {
                         fiber_in: data.fiber_in,
                         name_in: data.name_in,
                         channel: data.channel,
+                        channel_name: data.channel_name,
                         cable_out: data.cable_out,
                         fiber_out: data.fiber_out,
                         name_out: data.name_out

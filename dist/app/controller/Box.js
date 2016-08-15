@@ -129,6 +129,7 @@ Ext.define('IM.controller.Box', {
                             cable: cable.imap.id,
                             fiber: i,
                             channel: channel.channel,
+                            channel_name: channel.name,
                             name: cable.imap.id + ' - ' +  i + '.' + channel.name
                         })
                     })
@@ -184,6 +185,8 @@ Ext.define('IM.controller.Box', {
         });
     },
     onCellEdit: function(e, args) {
+        if (args.originalValue == args.value) return;
+
         var editor = e.activeEditor.field,
             dataIndex = e.activeColumn.dataIndex,
             record = e.activeRecord,
@@ -192,8 +195,9 @@ Ext.define('IM.controller.Box', {
             fiber = sel ? sel.get('fiber') : null,
             channel = sel ? sel.get('channel') : null;
 
-        if (dataIndex == 'name_in') {
-            record.set({cable_in: cable, fiber_in: fiber, channel: channel})
+
+        if (dataIndex == 'name_in' && sel) {
+            record.set({cable_in: cable, fiber_in: fiber, channel: channel, channel_name: sel.get('channel_name')})
         } else if (dataIndex == 'name_out') {
             record.set({cable_out: cable, fiber_out: fiber})
         }

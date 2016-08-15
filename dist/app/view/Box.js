@@ -29,8 +29,7 @@ Ext.define('IM.view.Box', {
         dataIndex: 'name_in',
         renderer: function(value, metaData, record, rowIndex, colIndex) {
             if (record.get('cable_in')){
-                return '<i class="fa fa-circle fiber-color-' + record.get('fiber_in') + '" style="margin-right:5px;"></i>' +
-                    record.get('name_in');
+                return '<i class="fa fa-circle fiber-color-' + record.get('fiber_in') + '" style="margin-right:5px;"></i>' + record.getNameIn();
             } else return '';
         },
         editor: {
@@ -39,6 +38,8 @@ Ext.define('IM.view.Box', {
             queryMode: 'local',
             valueField: 'name',
             displayField: 'name',
+            //forceSelection: true,
+            editable: false,
             listConfig: {
                 itemTpl: [
                     '<i class="fa fa-circle fiber-color-{fiber}" style="margin-right:5px;"></i>{name}'
@@ -71,8 +72,7 @@ Ext.define('IM.view.Box', {
         dataIndex: 'name_out',
         renderer: function(value, metaData, record, rowIndex, colIndex) {
             if (record.get('cable_out')){
-                return '<i class="fa fa-circle fiber-color-' + record.get('fiber_out') + '" style="margin-right:5px;"></i>' +
-                    record.get('cable_out') + ' - ' + record.get('fiber_out');
+                return '<i class="fa fa-circle fiber-color-' + record.get('fiber_out') + '" style="margin-right:5px;"></i>' + record.getNameOut();
             } else return '';
         },
         editor: {
@@ -81,6 +81,8 @@ Ext.define('IM.view.Box', {
             queryMode: 'local',
             valueField: 'name',
             displayField: 'name',
+            //forceSelection: true,
+            editable: false,
             listConfig: {
                 itemTpl: [
                     '<i class="fa fa-circle fiber-color-{fiber}" style="margin-right:5px;"></i>{name}'

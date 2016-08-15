@@ -44,6 +44,8 @@ Ext.define('IM.controller.Splitters', {
     },
 
     onCellEdit: function(e, args) {
+        if (args.originalValue == args.value) return;
+
         var editor = e.activeEditor.field,
             dataIndex = e.activeColumn.dataIndex,
             record = e.activeRecord,

@@ -32,6 +32,8 @@ Ext.define('IM.view.Splitters', {
             store: Ext.create('Ext.data.Store'),
             displayField: 'name',
             valueField: 'name',
+            forceSelection: true,
+            editable: false,
             listConfig: {
                 itemTpl: [
                     '<i class="fa fa-circle fiber-color-{fiber}" style="margin-right:5px;"></i>{name}'
@@ -52,6 +54,8 @@ Ext.define('IM.view.Splitters', {
             queryMode: 'local',
             valueField: 'name',
             displayField: 'name',
+            forceSelection: true,
+            editable: false,
             store: Ext.create('Ext.data.Store',{
                 fields: ['name'],
                 data: [
@@ -72,6 +76,8 @@ Ext.define('IM.view.Splitters', {
             queryMode: 'local',
             valueField: 'name',
             displayField: 'name',
+            forceSelection: true,
+            editable: false,
             store: Ext.create('Ext.data.Store',{
                 fields: ['name'],
                 data: [

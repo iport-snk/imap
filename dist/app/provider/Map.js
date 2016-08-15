@@ -222,34 +222,7 @@ Ext.define("IM.provider.Map", {
                         items.push({
                             title: "Разорвать",
                             onClick: function (menu, item) {
-                                var a1 = polyline.geometry.getCoordinates().slice(0, e._index + 1),
-                                    a2 = polyline.geometry.getCoordinates().slice(e._index),
-                                    lBox = polyline.imap.boxes['last'];
-                                polyline.geometry.setCoordinates(a1);
-
-                                var p2 = IM.provider.Map.createPolyline(
-                                    a2,
-                                    {type: 'cable', name: polyline.imap.name}, // fibers: item.fibers, boxes: item.boxes},
-                                    false
-                                );
-
-                                var fBox = me.createPlacemark(
-                                    coords,
-                                    {type:'box', name: 'FC', cables: [polyline, p2]}
-                                );
-                                polyline.imap.boxes['last'] = fBox;
-                                
-
-                                //lBox.imap.cables.push(p2);
-                                var lineIdx = lBox.imap.cables.indexOf(polyline);
-                                lBox.imap.cables[lineIdx] = p2;
-                                p2.imap.boxes['last'] = lBox;
-                                p2.imap.boxes['first'] = fBox;
-
-                                me.container.fireEvent('objectModified', fBox);
-                                me.container.fireEvent('objectModified', p2);
-
-                                //me.splitCable();
+                                 me.splitCable(coords, polyline, e._index);
                             }
                         });
                     }
@@ -397,6 +370,47 @@ Ext.define("IM.provider.Map", {
             this.ymap.balloon.close();
         }
     },
+    splitCable: function(coords, polyline, position){
+        var a1 = polyline.geometry.getCoordinates().slice(0, position + 1),
+            a2 = polyline.geometry.getCoordinates().slice(position),
+            lBox = polyline.imap.boxes['last'];
+
+        polyline.geometry.setCoordinates(a1);
+
+        var p2 = this.createPolyline(
+            a2,
+            {type: 'cable', name: polyline.imap.name}, // fibers: item.fibers, boxes: item.boxes},
+            false
+        );
+
+        var fBox = this.createPlacemark(
+            coords,
+            {type:'box', name: 'FC', cables: [polyline, p2]}
+        );
+        polyline.imap.boxes['last'] = fBox;
+
+
+        //lBox.imap.cables.push(p2);
+        var lineIdx = lBox.imap.cables.indexOf(polyline);
+        lBox.imap.cables[lineIdx] = p2;
+        p2.imap.boxes['last'] = lBox;
+        p2.imap.boxes['first'] = fBox;
+
+        Ext.getStore('Splitters').getData().getSource().each(function(item){
+            if (item.get('box') == lBox.imap.id) {
+                if (item.get('cable') == polyline.imap.id) item.set('cable', p2.imap.id);
+            }
+        });
+
+        Ext.getStore('Boxes').getData().getSource().each(function(item){
+            if (item.get('box') == lBox.imap.id) item.replaceCable(polyline.imap.id, p2.imap.id);
+        });
+
+
+        this.container.fireEvent('objectModified', fBox);
+        this.container.fireEvent('objectModified', p2);
+    },
+
     initMap: function(panel) {
         if (Ext.isEmpty(ymaps)) return;
 
