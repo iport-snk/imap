@@ -1,6 +1,6 @@
-Ext.define('IM.view.Box', {
+Ext.define('IM.view.Fibers', {
     extend: 'Ext.grid.Panel',
-    alias: 'widget.Box',
+    alias: 'widget.Fibers',
     selModel: {
         mode: 'SINGLE'
     },
