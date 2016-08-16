@@ -5,7 +5,9 @@ Ext.define('IM.view.Viewport', {
         'Ext.layout.container.Border',
         'IM.view.ObjectList',
         'IM.view.Fibers',
-        'IM.view.Splitters'
+        'IM.view.Splitters',
+        'IM.view.Cable',
+        'IM.view.Box'
     ],
 
     layout: {
@@ -63,15 +65,15 @@ Ext.define('IM.view.Viewport', {
             xtype: 'ObjectList',
             flex: 1
         },{
-            xtype: 'tabpanel',
+            xtype: 'panel',
+            layout: 'card',
+            itemId: 'ObjectView',
+            defaults: { border:false },
             items: [{
-                title: 'Волокна',
-                xtype: 'Fibers'
+                xtype: 'Box'
             },{
-                title: 'Сплетеры',
-                xtype: 'Splitters'
+                xtype: 'Cable'
             }],
-
             flex: 1
         }],
 

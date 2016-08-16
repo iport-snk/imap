@@ -2,13 +2,13 @@ Ext.define('IM.controller.Box', {
     extend: 'Ext.app.Controller',
     refs: [
         {ref: 'ObjectGrid', selector: 'ObjectList'},
-        {ref: 'Grid', selector: 'Box'}
+        {ref: 'Grid', selector: 'Fibers'}
     ],
     control: {
-        'Box #addFiberConnection' : {
+        'Fibers #addFiberConnection' : {
             click: 'addFiberConnection'
         },
-        'Box' : {
+        'Fibers' : {
             beforeEditorQuery: 'beforeEditorQuery',
             edit: 'onCellEdit',
             lightFiber: 'onLightFiber'

@@ -1,7 +1,8 @@
 Ext.define('IM.controller.ObjectList', {
     extend: 'Ext.app.Controller',
     refs: [
-        {ref: 'Grid', selector: 'ObjectList'}
+        {ref: 'Grid', selector: 'ObjectList'},
+        {ref: 'ObjectView', selector: '#ObjectView'}
     ],
     control: {
         'ObjectList #addFiber' : {
@@ -46,6 +47,7 @@ Ext.define('IM.controller.ObjectList', {
     },
 
     gridSelect: function(grid , record , index , eOpts ){
+        var cards = this.getObjectView().getLayout();
         if (record.get('type') == 'box') {
             var boxes = Ext.getStore('Boxes'),
                 splitters = Ext.getStore('Splitters'),
@@ -56,6 +58,10 @@ Ext.define('IM.controller.ObjectList', {
 
             splitters.clearFilter();
             splitters.filter('box', boxId);
+
+            cards.setActiveItem(0);
+        } else {
+            cards.setActiveItem(1);
         }
 
     }
