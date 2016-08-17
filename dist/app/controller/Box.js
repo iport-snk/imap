@@ -19,14 +19,25 @@ Ext.define('IM.controller.Box', {
     onLightFiber: function(e){
         //var fibers = this.findConnectedFibers(e.record, e.direction);
         //var lines = this.drawFibers(fibers);
-        var root = {
-            cable: e.record.get('cable_in'),
-            fiber: e.record.get('fiber_in')
-        };
-        for (var fiber of this.getChilds(root)) {
-            console.log(fiber);
-            this.drawFiber(fiber);
+        var record = e.record;
+        if (record.fiberCollection) {
+            IM.provider.Map.ymap.geoObjects.remove(record.fiberCollection);
+            delete record.fiberCollection;
+            return;
         }
+        var fiberCollection = new ymaps.GeoObjectCollection(),
+            root = {
+                cable: record.get('cable_out'),
+                fiber: record.get('fiber_out'),
+                channel: record.get('channel_name')
+            };
+
+        for (var fiber of this.getChilds(root)) {
+            fiberCollection.add(this.createFiber(fiber));
+        }
+        IM.provider.Map.ymap.geoObjects.add(fiberCollection);
+
+        record.fiberCollection = fiberCollection;
 
     },
 
@@ -34,18 +45,18 @@ Ext.define('IM.controller.Box', {
         var store = Ext.getStore('ObjectList'),
             me = this;
         return fibers.map(function(fiber){
-            return me.drawFiber(fiber);
+            IM.provider.Map.ymap.geoObjects.add(me.createFiber(fiber));
         });
 
     },
-    drawFiber: function(fiber){
+    createFiber: function(fiber){
         var store = Ext.getStore('ObjectList');
 
         var cable = store.getDataSource().findBy(function(record) {
             return (record.get('type') == 'cable' && record.get('id') == fiber.cable)
         });
         var coords = cable.get('geoObject').geometry.getCoordinates();
-        return IM.provider.Map.createFiber(coords, fiber.fiber);
+        return IM.provider.Map.createFiber(coords, fiber);
     },
 
     findConnectedFibers: function(boxConnection, dir){
@@ -79,11 +90,16 @@ Ext.define('IM.controller.Box', {
             me = this,
             childs = [];
 
+        yield node;
         store.getDataSource().filterBy(function(item){
             return ( item.get('cable_in') == node.cable &&
                      item.get('fiber_in') == node.fiber)
         }).each(function(item){
-            childs.push( {'cable' : item.get('cable_out'), 'fiber': item.get('fiber_out')});
+            childs.push({
+                'cable' : item.get('cable_out'),
+                'fiber': item.get('fiber_out'),
+                'channel': item.get('channel_name')
+            });
         });
 
         for (var i = 0; i < childs.length; i++) {

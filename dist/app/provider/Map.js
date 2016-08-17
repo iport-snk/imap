@@ -138,28 +138,33 @@ Ext.define("IM.provider.Map", {
 
     createFiber: function(coords, fiber) {
         var colors = [
-            '#E7210D', // красный
-            '#008D44', // зеленый
-            '#004792', // голубой
-            '#FFCC00', // желтый
-            '#FFFFFF', // бедый
-            '#BFC1C3', // серый
-            '#9E3D1B', // коричневый
-            '#A095C2', // фиолетовый
-            '#F27C0D', // оранжевый
-            '#000000', // черный
-            '#F17FAC', // розовый
-            '#78C5D0' // аквамарин
-        ];
+                '#E7210D', // красный
+                '#008D44', // зеленый
+                '#004792', // голубой
+                '#FFCC00', // желтый
+                '#FFFFFF', // бедый
+                '#BFC1C3', // серый
+                '#9E3D1B', // коричневый
+                '#A095C2', // фиолетовый
+                '#F27C0D', // оранжевый
+                '#000000', // черный
+                '#F17FAC', // розовый
+                '#78C5D0' // аквамарин
+            ],
+            width = 3,
+            style = 0;
 
+        if (fiber.channel) {
+            width = 1;
+            if (fiber.channel.indexOf('/') > -1) style = 'dash';
+        }
 
-
-        var polyline = new ymaps.Polyline(coords, {}, {
-            strokeColor: colors[fiber - 1] + "ff",
-            strokeWidth: 2
+        return new ymaps.Polyline(coords, {}, {
+            strokeColor: colors[fiber.fiber - 1] + "ff",
+            strokeWidth: width,
+            strokeStyle: style
         });
-        this.ymap.geoObjects.add(polyline);
-        return polyline;
+        //this.ymap.geoObjects.add(polyline);
     },
 
     createPolyline: function(coords, config, editable){

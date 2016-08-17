@@ -24,6 +24,7 @@ Ext.define('IM.Application', {
             splitters: hz('Splitters'),
             revisions: hz('Revisions')
         };
+        this.imap = IM.provider.Map;
         Ext.create('IM.view.Viewport');
     }
 });
