@@ -163,6 +163,7 @@ Ext.define("IM.provider.Map", {
     },
 
     createPolyline: function(coords, config, editable){
+        if (Ext.isEmpty(config.id)) config.id = this.newId(config.type, config.name);
 
         var me = this,
             cableDescription = {
@@ -170,7 +171,7 @@ Ext.define("IM.provider.Map", {
                 E8: {strokeColor: "#00000040", strokeWidth: 8, fibers: 8},
                 E12: {strokeColor: "#00000040", strokeWidth: 12, fibers: 12}
             },
-            polyline = new ymaps.Polyline(coords, {}, {
+            polyline = new ymaps.Polyline(coords, {hintContent: config.id}, {
                 strokeColor: cableDescription[config.name].strokeColor,
                 strokeWidth: cableDescription[config.name].strokeWidth,
                 editorMaxPoints: 999999,
@@ -238,7 +239,6 @@ Ext.define("IM.provider.Map", {
         // Custom properties/methods
         polyline.imap = config;
         Ext.applyIf(polyline.imap, {
-            id: me.newId(config.type, config.name),
             getId: this.getId.bind(polyline),
             detach: this.detach.bind(polyline),
             attachToClosestBox: this.attachToClosestBox.bind(polyline),

@@ -40,7 +40,20 @@ Ext.define('IM.controller.Splitters', {
             record = editor.activeRecord,
             dataIndex = editor.activeColumn.dataIndex == 'name_in' ? 'in' : 'out',
             odf = this.getObjectGrid().getSelection()[0];
+        e.store.clearFilter();
         e.store.loadData(this.getFibers(odf.get('geoObject')));
+        e.store.filterBy(function(item){
+            var selectedIdx = e.grid.store.findBy(function(selectedItem){
+                return ( selectedItem.get('cable') == item.get('cable') &&
+                selectedItem.get('fiber') == item.get('fiber'))
+            });
+            if (selectedIdx == -1) {
+                return true;
+            } else {
+                var found = e.grid.store.getAt(selectedIdx);
+                return (found && found.get('cable') == record.get('cable') && found.get('fiber') == record.get('fiber'));
+            }
+        });
     },
 
     onCellEdit: function(e, args) {

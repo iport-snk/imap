@@ -59,9 +59,9 @@ Ext.define('IM.controller.ObjectList', {
             splitters.clearFilter();
             splitters.filter('box', boxId);
 
-            cards.setActiveItem(0);
-        } else {
             cards.setActiveItem(1);
+        } else {
+            cards.setActiveItem(2);
         }
 
     }

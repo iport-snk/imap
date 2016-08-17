@@ -70,6 +70,8 @@ Ext.define('IM.view.Viewport', {
             itemId: 'ObjectView',
             defaults: { border:false },
             items: [{
+                xtype: 'panel'
+            },{
                 xtype: 'Box'
             },{
                 xtype: 'Cable'

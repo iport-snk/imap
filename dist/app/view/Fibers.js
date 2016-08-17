@@ -47,7 +47,7 @@ Ext.define('IM.view.Fibers', {
             },
             listeners: {
                 beforequery: function(e){
-                    var grid = Ext.ComponentQuery.query('Box')[0];
+                    var grid = e.combo.up('grid');
                     grid.fireEvent('beforeEditorQuery', {grid: grid, store: e.combo.store});
                 }
             }
@@ -90,7 +90,7 @@ Ext.define('IM.view.Fibers', {
             },
             listeners: {
                 beforequery: function(e){
-                    var grid = Ext.ComponentQuery.query('Box')[0];
+                    var grid = e.combo.up('grid');
                     grid.fireEvent('beforeEditorQuery', {grid: grid, store: e.combo.store});
                 }
             }

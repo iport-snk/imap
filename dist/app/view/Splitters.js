@@ -32,7 +32,7 @@ Ext.define('IM.view.Splitters', {
             store: Ext.create('Ext.data.Store'),
             displayField: 'name',
             valueField: 'name',
-            forceSelection: true,
+            //forceSelection: true,
             editable: false,
             listConfig: {
                 itemTpl: [
@@ -54,7 +54,7 @@ Ext.define('IM.view.Splitters', {
             queryMode: 'local',
             valueField: 'name',
             displayField: 'name',
-            forceSelection: true,
+            //forceSelection: true,
             editable: false,
             store: Ext.create('Ext.data.Store',{
                 fields: ['name'],

@@ -9,7 +9,7 @@ Ext.define('IM.controller.Box', {
             click: 'addFiberConnection'
         },
         'Fibers' : {
-            beforeEditorQuery: 'beforeEditorQuery',
+            beforeEditorQuery: 'editorQuery',
             edit: 'onCellEdit',
             lightFiber: 'onLightFiber'
         }
@@ -25,20 +25,27 @@ Ext.define('IM.controller.Box', {
         };
         for (var fiber of this.getChilds(root)) {
             console.log(fiber);
+            this.drawFiber(fiber);
         }
 
     },
 
     drawFibers: function(fibers){
-        var store = Ext.getStore('ObjectList');
+        var store = Ext.getStore('ObjectList'),
+            me = this;
         return fibers.map(function(fiber){
-            var cable = store.getDataSource().findBy(function(record) {
-                return (record.get('type') == 'cable' && record.get('id') == fiber.cable)
-            });
-            var coords = cable.get('geoObject').geometry.getCoordinates();
-            return IM.provider.Map.createFiber(coords, fiber.fiber);
+            return me.drawFiber(fiber);
         });
 
+    },
+    drawFiber: function(fiber){
+        var store = Ext.getStore('ObjectList');
+
+        var cable = store.getDataSource().findBy(function(record) {
+            return (record.get('type') == 'cable' && record.get('id') == fiber.cable)
+        });
+        var coords = cable.get('geoObject').geometry.getCoordinates();
+        return IM.provider.Map.createFiber(coords, fiber.fiber);
     },
 
     findConnectedFibers: function(boxConnection, dir){
@@ -150,7 +157,7 @@ Ext.define('IM.controller.Box', {
         return fibers;
     },
 
-    beforeEditorQuery: function(e){
+    editorQuery: function(e){
         var editor = e.grid.editingPlugin,
             record = editor.activeRecord,
             dataIndex = editor.activeColumn.dataIndex == 'name_in' ? 'in' : 'out',
