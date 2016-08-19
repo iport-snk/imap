@@ -5,7 +5,7 @@ Ext.define('IM.view.Box', {
         title: 'Волокна',
         xtype: 'Fibers'
     },{
-        title: 'Сплетеры',
+        title: 'Сплиттеры',
         xtype: 'Splitters'
     }]
 });

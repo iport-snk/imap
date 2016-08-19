@@ -176,7 +176,7 @@ Ext.define('IM.controller.Box', {
     editorQuery: function(e){
         var editor = e.grid.editingPlugin,
             record = editor.activeRecord,
-            dataIndex = editor.activeColumn.dataIndex == 'name_in' ? 'in' : 'out',
+            dataIndex = editor.activeColumn.dataIndex == 'chooser_in' ? 'in' : 'out',
             odf = this.getObjectGrid().getSelection()[0];
 
         e.store.loadData(this.getFibers(odf.get('geoObject'), dataIndex));
@@ -219,10 +219,10 @@ Ext.define('IM.controller.Box', {
             channel = sel ? sel.get('channel') : null;
 
 
-        if (dataIndex == 'name_in' && sel) {
-            record.set({cable_in: cable, fiber_in: fiber, channel: channel, channel_name: sel.get('channel_name')})
-        } else if (dataIndex == 'name_out') {
-            record.set({cable_out: cable, fiber_out: fiber})
+        if (dataIndex == 'chooser_in' && sel) {
+            record.set({cable_in: cable, fiber_in: fiber, channel: channel, channel_name: sel.get('channel_name'), name_in: args.value})
+        } else if (dataIndex == 'chooser_out') {
+            record.set({cable_out: cable, fiber_out: fiber, name_out: args.value})
         }
     }
 });

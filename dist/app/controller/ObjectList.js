@@ -2,6 +2,7 @@ Ext.define('IM.controller.ObjectList', {
     extend: 'Ext.app.Controller',
     refs: [
         {ref: 'Grid', selector: 'ObjectList'},
+        {ref: 'BoxGrid', selector: 'Fibers'},
         {ref: 'ObjectView', selector: '#ObjectView'}
     ],
     control: {
@@ -47,14 +48,30 @@ Ext.define('IM.controller.ObjectList', {
     },
 
     gridSelect: function(grid , record , index , eOpts ){
-        var cards = this.getObjectView().getLayout();
+        var cards = this.getObjectView().getLayout(),
+            name = record.get('name');
         if (record.get('type') == 'box') {
             var boxes = Ext.getStore('Boxes'),
                 splitters = Ext.getStore('Splitters'),
-                boxId = record.get('geoObject').imap.id;
+                boxId = record.get('geoObject').imap.id,
+                columns = this.getBoxGrid().getColumns();
 
             boxes.clearFilter();
             boxes.filter('box', boxId);
+            if (name == 'ODF') {
+                columns[0].show();
+                columns[1].hide();
+                columns[2].hide();
+                
+            } else if (name == 'FC') {
+                columns[0].hide();
+                columns[1].show();
+                columns[2].show();
+
+
+            }
+          
+            this.getBoxGrid().getView().refresh();
 
             splitters.clearFilter();
             splitters.filter('box', boxId);

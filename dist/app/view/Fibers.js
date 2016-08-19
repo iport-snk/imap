@@ -4,7 +4,7 @@ Ext.define('IM.view.Fibers', {
     selModel: {
         mode: 'SINGLE'
     },
-    forceFit: true,
+    forceFit: false,
     plugins: Ext.create('Ext.grid.plugin.CellEditing', {
         clicksToEdit: 1,
         listeners: {
@@ -25,8 +25,14 @@ Ext.define('IM.view.Fibers', {
         disabled: true
     }],
     columns: [{
-        header: 'Волокно',
+        header: 'Порт',
         dataIndex: 'name_in',
+        flex: 1,
+        editor: {xtype: 'textfield'}
+    },{
+        header: 'Волокно',
+        dataIndex: 'chooser_in',
+        flex: 1,
         renderer: function(value, metaData, record, rowIndex, colIndex) {
             if (record.get('cable_in')){
                 return '<i class="fa fa-circle fiber-color-' + record.get('fiber_in') + '" style="margin-right:5px;"></i>' + record.getNameIn();
@@ -69,7 +75,8 @@ Ext.define('IM.view.Fibers', {
         }]
     },{
         header: 'Волокно',
-        dataIndex: 'name_out',
+        flex: 1,
+        dataIndex: 'chooser_out',
         renderer: function(value, metaData, record, rowIndex, colIndex) {
             if (record.get('cable_out')){
                 return '<i class="fa fa-circle fiber-color-' + record.get('fiber_out') + '" style="margin-right:5px;"></i>' + record.getNameOut();

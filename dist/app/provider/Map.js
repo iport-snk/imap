@@ -172,9 +172,9 @@ Ext.define("IM.provider.Map", {
 
         var me = this,
             cableDescription = {
-                E2: {strokeColor: "#00000040", strokeWidth: 6, fibers: 2},
-                E8: {strokeColor: "#00000040", strokeWidth: 8, fibers: 8},
-                E12: {strokeColor: "#00000040", strokeWidth: 12, fibers: 12}
+                E2: {strokeColor: ["#999","#FFF"], strokeWidth: [6, 4], fibers: 2},
+                E8: {strokeColor: ["#999", "#fff"], strokeWidth: [8, 6], fibers: 8},
+                E12: {strokeColor: ["#999", "#fff"], strokeWidth: [10, 8], fibers: 12}
             },
             polyline = new ymaps.Polyline(coords, {hintContent: config.id}, {
                 strokeColor: cableDescription[config.name].strokeColor,
@@ -211,6 +211,18 @@ Ext.define("IM.provider.Map", {
                                 var point = me.createPlacemark(
                                         coords,
                                         {type:'box', name: 'FC', cables: [polyline]}
+                                    ),
+                                    boxPosition = e._index == 0 ? 'first': 'last';
+
+                                polyline.imap.boxes[boxPosition] = point;
+                                me.container.fireEvent('objectModified', point);
+                            }
+                        },{
+                            title: "Установить ODF",
+                            onClick: function (menu, item) {
+                                var point = me.createPlacemark(
+                                        coords,
+                                        {type:'box', name: 'ODF', cables: [polyline]}
                                     ),
                                     boxPosition = e._index == 0 ? 'first': 'last';
 
@@ -298,11 +310,15 @@ Ext.define("IM.provider.Map", {
     createPlacemark: function(coords, config) {
         config.id = config.id || this.newId(config.type, config.name);
         var me = this,
-            point = new ymaps.Placemark(coords, {
-                iconContent: config.id
-            }, {
-                preset: 'islands#blueStretchyIcon'
-            });
+            preset = {
+                FC : 'islands#blueCircleDotIcon',
+                ODF: 'islands#blueHomeCircleIcon'
+            }[config.name],
+            point = new ymaps.Placemark(
+                coords,
+                {iconContent: config.id},
+                {preset: preset}
+            );
 
         point.imap = config;
         Ext.applyIf(point.imap, {
