@@ -4,10 +4,12 @@ Ext.define('IM.view.Viewport', {
         'Ext.tab.Panel',
         'Ext.layout.container.Border',
         'IM.view.ObjectList',
+        'IM.view.Customers',
         'IM.view.Fibers',
         'IM.view.Splitters',
         'IM.view.Cable',
-        'IM.view.Box'
+        'IM.view.Box',
+        'IM.view.Pillars'
     ],
 
     layout: {
@@ -26,15 +28,8 @@ Ext.define('IM.view.Viewport', {
 
         }]
     },{
-
         region: 'west',
         split: true,
-
- /*       xtype: 'tabpanel',
-        tabBarHeaderPosition: 0,
-        titleAlign: 'right',
-        title: 'Maps',*/
-
         collapsible: true,
         layout: {
             type: 'vbox',
@@ -62,21 +57,37 @@ Ext.define('IM.view.Viewport', {
 
 
         items:[{
-            xtype: 'ObjectList',
-            flex: 1
-        },{
-            xtype: 'panel',
-            layout: 'card',
-            itemId: 'ObjectView',
-            defaults: { border:false },
+             xtype: 'tabpanel',
+             //tabBarHeaderPosition: 0,
+             //titleAlign: 'right',
+
+            flex: 1,
             items: [{
-                xtype: 'panel'
+                title: 'Сеть',
+                xtype: 'ObjectList'
+
             },{
-                xtype: 'Box'
+                title: 'Объекты',
+                xtype: 'panel',
+                layout: 'card',
+                itemId: 'ObjectView',
+                defaults: { border:false },
+                items: [{
+                    xtype: 'panel'
+                },{
+                    xtype: 'Box'
+                },{
+                    xtype: 'Cable'
+                }]
             },{
-                xtype: 'Cable'
-            }],
-            flex: 1
+                title: 'Клиенты',
+                xtype: 'customers'
+
+            },{
+                title: 'Столбы',
+                xtype: 'pillars'
+            }]
+
         }],
 
 

@@ -24,3 +24,10 @@ a {
 .fiber-color-10 { color: #000000;}
 .fiber-color-11 { color: #F17FAC;}
 .fiber-color-12 { color: #78C5D0;}
+
+.x-fa.fa-map-marker.red { color: #FF0000!important;}
+
+
+.geocode-action-resolve:before      {font:18px/1 FontAwesome;color:#81cb31;content:"\f058"}
+.geocode-action-place:before        {font:18px/1 FontAwesome;color:#dd6550;content:"\f056"}
+.array-grid-alert-col:before    {font:18px/1 FontAwesome;color:#ffc839;content:"\f071"}

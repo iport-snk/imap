@@ -172,9 +172,10 @@ Ext.define("IM.provider.Map", {
 
         var me = this,
             cableDescription = {
-                E2: {strokeColor: ["#999","#FFF"], strokeWidth: [6, 4], fibers: 2},
-                E8: {strokeColor: ["#999", "#fff"], strokeWidth: [8, 6], fibers: 8},
-                E12: {strokeColor: ["#999", "#fff"], strokeWidth: [10, 8], fibers: 12}
+                E1: {strokeColor: ["#999","#1E90FF"], strokeWidth: [2, 1], fibers: 1},
+                E2: {strokeColor: ["#999","#1E90FF"], strokeWidth: [6, 4], fibers: 2},
+                E8: {strokeColor: ["#999", "#1E90FF"], strokeWidth: [8, 6], fibers: 8},
+                E12: {strokeColor: ["#999", "#1E90FF"], strokeWidth: [10, 8], fibers: 12}
             },
             polyline = new ymaps.Polyline(coords, {hintContent: config.id}, {
                 strokeColor: cableDescription[config.name].strokeColor,
@@ -210,7 +211,7 @@ Ext.define("IM.provider.Map", {
                             onClick: function (menu, item) {
                                 var point = me.createPlacemark(
                                         coords,
-                                        {type:'box', name: 'FC', cables: [polyline]}
+                                        {type: MapObject.BOX, name: 'FC', cables: [polyline]}
                                     ),
                                     boxPosition = e._index == 0 ? 'first': 'last';
 
@@ -222,7 +223,7 @@ Ext.define("IM.provider.Map", {
                             onClick: function (menu, item) {
                                 var point = me.createPlacemark(
                                         coords,
-                                        {type:'box', name: 'ODF', cables: [polyline]}
+                                        {type: MapObject.BOX, name: 'ODF', cables: [polyline]}
                                     ),
                                     boxPosition = e._index == 0 ? 'first': 'last';
 
@@ -400,13 +401,13 @@ Ext.define("IM.provider.Map", {
 
         var p2 = this.createPolyline(
             a2,
-            {type: 'cable', name: polyline.imap.name}, // fibers: item.fibers, boxes: item.boxes},
+            {type: MapObject.CABLE, name: polyline.imap.name}, // fibers: item.fibers, boxes: item.boxes},
             false
         );
 
         var fBox = this.createPlacemark(
             coords,
-            {type:'box', name: 'FC', cables: [polyline, p2]}
+            {type: MapObject.BOX, name: 'FC', cables: [polyline, p2]}
         );
         polyline.imap.boxes['last'] = fBox;
 
@@ -440,7 +441,7 @@ Ext.define("IM.provider.Map", {
             ymap = this.ymap = new ymaps.Map (panel.body.el.dom, {
                 center: [50.352307, 30.957459],
                 zoom: 12,
-                controls: ['zoomControl']
+                controls: ['zoomControl', 'typeSelector']
             }),
             addMarkerBtn = this.addMarkerBtn = new ymaps.control.Button({
                 data: { image: '/css/y-btn-add.png'}

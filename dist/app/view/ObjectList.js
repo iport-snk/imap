@@ -9,11 +9,7 @@ Ext.define('IM.view.ObjectList', {
     },
     store: Ext.create('Ext.data.Store', {
         storeId: 'ObjectList',
-        fields: [
-            {name: 'type'},
-            {name: 'name'},
-            {name: 'geoObject'}
-        ],
+        model: 'IM.model.MapObject',
         autoLoad: false
     }),
     tbar:[{
@@ -22,6 +18,7 @@ Ext.define('IM.view.ObjectList', {
         menu: {
             items: [
                 { text: 'Кабель',   menu: {itemId: 'addFiber', items: [
+                    {text: 'E1', itemId: 'E1'},
                     {text: 'E2', itemId: 'E2'},
                     {text: 'E8', itemId: 'E8'},
                     {text: 'E12', itemId: 'E12'}
@@ -32,6 +29,12 @@ Ext.define('IM.view.ObjectList', {
     },'->', {
         text: 'Удалить',
         itemId: 'btnDel',
+        cls: 'action-btn',
+        disabled: true
+    },{
+        text: 'Изменить',
+        itemId: 'btnEdit',
+        cls: 'action-btn',
         disabled: true
     }],
     columns: [{
@@ -43,5 +46,29 @@ Ext.define('IM.view.ObjectList', {
     },{
         header: 'Тип',
         dataIndex: 'name'
+    },{
+        sortable: false,
+        menuDisabled: true,
+        xtype: 'actioncolumn',
+        align: 'center',
+        width: 30,
+        items: [{
+            iconCls: 'x-fa fa-edit',
+            handler: (...args) => {
+                var go = args[5].get('geoObject');
+
+                if (go.editor.state.get('editing')) {
+                    go.editor.stopEditing();
+                } else {
+                    go.editor.startEditing();
+                }
+
+            },
+            isDisabled: function() {
+                var record = arguments[4];
+
+                return !record.isCable();
+            }
+        }]
     }]
 });

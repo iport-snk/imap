@@ -9,6 +9,12 @@ Ext.define('IM.controller.ObjectList', {
         'ObjectList #addFiber' : {
             click: 'addFiber'
         },
+        'ObjectList #btnDel' : {
+            click: 'deleteObject'
+        },
+        'ObjectList #btnEdit' : {
+            click: 'editObject'
+        },
         'Map' : {
             objectModified: 'objectModified',
             objectSelected: 'objectSelected'
@@ -16,6 +22,13 @@ Ext.define('IM.controller.ObjectList', {
         'ObjectList' : {
             select: 'gridSelect'
         }
+
+    },
+
+    editObject: function () {
+        var record = this.getGrid().getSelectionModel().selected.items[0];
+
+        record.data.geoObject.editor.startEditing();
 
     },
 
@@ -44,37 +57,41 @@ Ext.define('IM.controller.ObjectList', {
 
     },
     addFiber: function(menu, item){
-        IM.provider.Map.createPolyline([], {type:'cable', name: item.itemId}, true);
+        IM.provider.Map.createPolyline([], {type: MapObject.CABLE, name: item.itemId}, true);
+    },
+
+    setActionAvailability: function () {
+        this.getGrid().query('[cls=action-btn]').forEach( btn => btn.setDisabled(false));
     },
 
     gridSelect: function(grid , record , index , eOpts ){
-        var cards = this.getObjectView().getLayout(),
-            name = record.get('name');
-        if (record.get('type') == 'box') {
+        var cards = this.getObjectView().getLayout();
+
+        this.setActionAvailability();
+
+        if (record.isBox()) {
             var boxes = Ext.getStore('Boxes'),
                 splitters = Ext.getStore('Splitters'),
                 boxId = record.get('geoObject').imap.id,
                 columns = this.getBoxGrid().getColumns();
 
             boxes.clearFilter();
-            boxes.filter('box', boxId);
-            if (name == 'ODF') {
+            boxes.filter(MapObject.BOX, boxId);
+
+            if (record.isODF()) {
                 columns[0].show();
                 columns[1].hide();
                 columns[2].hide();
-                
-            } else if (name == 'FC') {
+            } else if (record.isFC()) {
                 columns[0].hide();
                 columns[1].show();
                 columns[2].show();
-
-
             }
           
             this.getBoxGrid().getView().refresh();
 
             splitters.clearFilter();
-            splitters.filter('box', boxId);
+            splitters.filter(MapObject.BOX, boxId);
 
             cards.setActiveItem(1);
         } else {

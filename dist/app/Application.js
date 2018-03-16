@@ -11,7 +11,7 @@ Ext.define('IM.Application', {
 
     ],
 
-    models: ['Box'],
+    models: ['Box', 'MapObject'],
     controllers: ['ObjectList', 'Box', 'HZ', 'Splitters'],
     stores: ['Fibers', 'Boxes', 'Splitters'],
     appProperty: 'app',
