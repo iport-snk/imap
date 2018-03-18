@@ -15,8 +15,55 @@ Ext.define('IM.Application', {
     controllers: ['ObjectList', 'Box', 'HZ', 'Splitters'],
     stores: ['Fibers', 'Boxes', 'Splitters'],
     appProperty: 'app',
+
+    updateDevices: function () {
+
+    },
+
+    updatePositions: function (positions) {
+console.log(positions);
+    },
+
+    updateEvents: function () {
+
+    },
+
+    socketOnMessage: function (event) {
+        var data = Ext.decode(event.data);
+
+        if (data.devices) {
+            this.updateDevices(data.devices);
+        }
+        if (data.positions) {
+            this.updatePositions(data.positions);
+            first = false;
+        }
+        if (data.events) {
+            this.updateEvents(data.events);
+        }
+    },
+
+    socketOnClose: function () {
+        setTimeout(() => {
+            this.socketStart();
+        }, 60000);
+    },
+
+    socketStart: function () {
+        var socket = new WebSocket("ws://df.fun.co.ua:8080/api/socket");
+
+        socket.onclose = this.socketOnClose.bind(this);
+        socket.onmessage = this.socketOnMessage.bind(this);
+    },
+
     launch: function () {
-        this.imap = IM.provider.Map;
-        Ext.create('IM.view.Viewport');
+        $.post('http://df.fun.co.ua:8080/api/session', {
+            email: 'oleg.k@iport.net.ua',
+            password: 'mutabor'
+        }).done((data) => {
+            this.imap = IM.provider.Map;
+            Ext.create('IM.view.Viewport');
+            this.socketStart();
+        });
     }
 });
