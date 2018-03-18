@@ -148,6 +148,7 @@ Ext.define('IM.view.PillarsController', {
     },
 
     movePillar: function () {
+        
         this.selectedPillar.options.set('preset', "islands#redIcon");
         this.selectedPillar.editor.startEditing();
     },
