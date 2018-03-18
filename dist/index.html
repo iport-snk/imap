@@ -5,21 +5,12 @@
         <link rel='stylesheet' href='/css/style.css' />
         <link href="https://use.fontawesome.com/releases/v5.0.7/css/all.css" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="/ext-6.2.1/triton/theme-triton-all.css">
-        <script type="text/javascript" src="/horizon/horizon.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
         <script type="text/javascript" src="/ext-6.2.1/ext-all.js"></script>
         <script type="text/javascript">
             var ymaps;
             function app(){
-
-                var horizon = Horizon();
-                    horizon.onReady(function() {
-                        //document.querySelector('h1').innerHTML = 'imap works!'
-                    });
-
-                horizon.connect();
-
                 Ext.application({
                     name: 'IM',
                     extend: 'IM.Application',

@@ -16,14 +16,6 @@ Ext.define('IM.Application', {
     stores: ['Fibers', 'Boxes', 'Splitters'],
     appProperty: 'app',
     launch: function () {
-        var hz = new Horizon();
-        this.hz = {
-            db: hz,
-            geoObjects: hz('GeoObjects'),
-            boxes: hz('Boxes'),
-            splitters: hz('Splitters'),
-            revisions: hz('Revisions')
-        };
         this.imap = IM.provider.Map;
         Ext.create('IM.view.Viewport');
     }
