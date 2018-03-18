@@ -7,22 +7,20 @@ Ext.define('IM.Application', {
         'Ext.layout.container.Border',
         'IM.store.Fibers',
 	    'IM.provider.Map',
-	    'IM.view.Map'
+	    'IM.view.Map',
+        'IM.Cars'
 
     ],
 
-    models: ['Box', 'MapObject'],
+    models: ['Box', 'MapObject', 'Car'],
     controllers: ['ObjectList', 'Box', 'HZ', 'Splitters'],
-    stores: ['Fibers', 'Boxes', 'Splitters'],
+    stores: ['Fibers', 'Boxes', 'Splitters', 'Cars'],
     appProperty: 'app',
 
     updateDevices: function () {
 
     },
 
-    updatePositions: function (positions) {
-console.log(positions);
-    },
 
     updateEvents: function () {
 
@@ -35,7 +33,7 @@ console.log(positions);
             this.updateDevices(data.devices);
         }
         if (data.positions) {
-            this.updatePositions(data.positions);
+            this.cars.updatePositions(data.positions);
         }
         if (data.events) {
             this.updateEvents(data.events);
@@ -56,6 +54,8 @@ console.log(positions);
     },
 
     launch: function () {
+
+        this.cars = new IM.Cars();
 
         var hz = new Horizon();
         this.hz = {
