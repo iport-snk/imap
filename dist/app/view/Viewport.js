@@ -9,7 +9,8 @@ Ext.define('IM.view.Viewport', {
         'IM.view.Splitters',
         'IM.view.Cable',
         'IM.view.Box',
-        'IM.view.Pillars'
+        'IM.view.Pillars',
+        'IM.view.CustomersCommonController'
     ],
 
     layout: {
@@ -80,12 +81,43 @@ Ext.define('IM.view.Viewport', {
                     xtype: 'Cable'
                 }]
             },{
-                title: 'Клиенты',
-                xtype: 'customers'
 
-            },{
-                title: 'Столбы',
-                xtype: 'pillars'
+                title: 'Клиенты',
+                xtype: 'panel',
+                controller: 'customersCommon',
+                layout: {
+                    type: 'vbox',
+                    pack: 'start',
+                    align: 'stretch'
+                },
+                tbar:[{
+                    xtype: 'combobox',
+                    name: 'regions',
+                    reference: 'regionCombo',
+                    store:  {
+                        type: 'store',
+                        fields: ['id', 'name', 'pos', 'pid'],
+                        autoLoad: false
+                    },
+                    listeners: {
+                        boxready: 'bindRegions',
+                        change: 'onRegionChange'
+                    },
+                    valueField: 'id',
+                    editable: false,
+                    forceSelection: true,
+                    displayField: 'name',
+                    typeAhead: true,
+                    queryMode: 'local',
+                    flex: 1,
+                    emptyText: 'Село ...'
+                }],
+                items: [{
+                    xtype: 'pillars'
+                },{
+                    flex: 1,
+                    xtype: 'customers'
+                }]
             }]
 
         }],

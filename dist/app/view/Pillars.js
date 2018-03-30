@@ -4,28 +4,27 @@ Ext.define('IM.view.Pillars', {
     xtype: 'pillars',
     controller: 'pillars',
     forceFit: true,
+    listeners: {
+        regionChange: 'onRegionChange'
+    },
     items: [{
-        docked: 'top',
-        xtype: 'toolbar',
+        //docked: 'top',
+        //xtype: 'toolbar',
+        xtype: 'container',
+        layout: 'hbox',
         items: [{
-            xtype: 'combobox',
+            xtype: 'hidden',
             name: 'regions',
-            reference: 'regionCombo',
-            store:  {
-                type: 'store',
-                fields: ['id', 'name', 'pos'],
-                autoLoad: false
-            },
+            reference: 'region'
+        },{
+            xtype: 'textfield',
+            name: 'iconContent',
+            reference: 'selectedPillarName',
+            width: 50,
+            emptyText: '№',
             listeners: {
-                boxready: 'bindRegions',
-                change: 'bindTp'
-            },
-            valueField: 'id',
-            displayField: 'name',
-            typeAhead: true,
-            queryMode: 'local',
-            flex: 1,
-            emptyText: 'Село ...'
+                change: 'updatePillarProperty'
+            }
         },{
             xtype: 'combobox',
             reference: 'tpCombo',
@@ -40,8 +39,9 @@ Ext.define('IM.view.Pillars', {
             },
             valueField: 'id',
             displayField: 'name',
-            typeAhead: true,
             queryMode: 'local',
+            editable: false,
+            forceSelection: true,
             width: 100,
             emptyText: 'ТП ...'
         },{
@@ -58,39 +58,55 @@ Ext.define('IM.view.Pillars', {
             },
             valueField: 'id',
             displayField: 'name',
-            typeAhead: true,
+            editable: false,
+            forceSelection: true,
             queryMode: 'local',
             width: 100,
             emptyText: 'Л ...'
-        },  {
-            xtype: 'button',
-            reference: 'addFiberButton',
-            iconCls: 'x-fa fa-plus-circle',
-            disabled: true,
-            handler: 'addPillar'
+        },{
+            xtype: 'combobox',
+            reference: 'boxTypeCombo',
+            name: 'box',
+            store:  {
+                type: 'store',
+                fields: ['id', 'name'],
+                data: [
+                    {id: 'FOB-04', name: 'FOB-04'},
+                    {id: 'FOB-12', name: 'FOB-12'},
+                    {id: 'Колба', name: 'Колба'}
+                ]
+            },
+            valueField: 'id',
+            displayField: 'name',
+            editable: false,
+            forceSelection: true,
+            queryMode: 'local',
+            width: 100,
+            emptyText: 'Бокс ..'
         }]
     }, {
-        docked: 'top',
-        xtype: 'toolbar',
+        //docked: 'top',
+        //xtype: 'toolbar',
+        xtype: 'container',
+        layout: 'hbox',
         items: [{
-            xtype: 'textfield',
-            name: 'iconContent',
-            reference: 'selectedPillarName',
-            width: 40,
-            listeners: {
-                change: 'updatePillarProperty'
-            }
-        },{
             xtype: 'textfield',
             name: 'description',
             reference: 'selectedPillarDescription',
             flex: 1,
+            emptyText: 'Коментарий',
             listeners: {
                 change: 'updatePillarProperty'
             }
         }, {
             xtype: 'button',
-            iconCls: 'x-fa fa-edit',
+            iconCls: 'x-fa fa-plus-circle',
+            disabled: true,
+            reference: 'addPillarBtn',
+            handler: 'addPillar'
+        }, {
+            xtype: 'button',
+            iconCls: 'x-fa fa-map-marker',
             handler: 'movePillar'
         }, {
             xtype: 'button',

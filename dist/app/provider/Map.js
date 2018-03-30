@@ -433,6 +433,31 @@ Ext.define("IM.provider.Map", {
         this.container.fireEvent('objectModified', p2);
     },
 
+    hideRelations: function () {
+        ymaps.geoQuery(IM.provider.Map.ymap.geoObjects)
+            .search('properties.searchTag=="relation"')
+            .removeFromMap(IM.provider.Map.ymap);
+    },
+
+    showRelation: function (record) {
+        let boxId = record.get('box_id'),
+            boxPosition = ymaps.geoQuery(IM.provider.Map.ymap.geoObjects).search(`properties.rowId==${boxId}`)
+                .get(0).geometry.getCoordinates(),
+            userPosition = record.get('placeMark').geometry.getCoordinates(),
+            line = new ymaps.Polyline([
+                boxPosition, userPosition
+            ], {
+                searchTag: "relation"
+            }, {
+                strokeColor: "#ff0000",
+                strokeWidth: 1,
+            });
+
+        this.ymap.geoObjects.add(line);
+
+        return line;
+    },
+
     initMap: function(panel) {
         if (Ext.isEmpty(ymaps)) return;
 

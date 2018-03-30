@@ -2,15 +2,34 @@ Ext.define('IM.view.PillarsController', {
     extend: 'Ext.app.ViewController',
     alias: 'controller.pillars',
     selectedPillar: {},
-    bindRegions: function (combo) {
-        $.get('http://stat.fun.co.ua/geocode.php', {
-            action: 'getMapRegions'
-        }).done((data) => {
-            combo.store.loadData(data)
-        });
+
+    data: {},
+
+    init: function () {
+        this.mapContainer = Ext.ComponentQuery.query('Map')[0];
+        this.loadMapObjects("2");
+        this.loadMapObjects("3");
+
     },
 
-    getObjaectManager: function () {
+    loadMapObjects: function (type) {
+        $.get('http://stat.fun.co.ua/geocode.php', {
+            action: 'getMapObjects',
+            type: type
+        }).done((data) => {
+            this.data[type] = data;
+        })
+    },
+
+    onRegionChange: function (record) {
+        let regionId = record.get('id');
+
+        this.bindTp(regionId, record.get('pos'));
+        this.lookup('region').setValue(regionId);
+    },
+
+
+    getObjectManager: function () {
         // Оптимальное добавление множества меток
         // https://tech.yandex.ru/maps/jsbox/2.1/object_manager
     },
@@ -32,80 +51,74 @@ Ext.define('IM.view.PillarsController', {
                     tp: data.tp,
                     line: data.line,
                     region: data.region,
+                    box: data.box,
                     description: data.description,
                     iconContent: data.name
                 }, {
-                    preset: 'islands#blueIcon'
+                    preset: 'islands#violetCircleIcon'
                 });
             })
 
         });
     },
 
-    bindTp: function(regionCombo) {
+    bindTp: function(regionId, pos) {
         //ymaps.geoQuery(IM.provider.Map.ymap.geoObjects).each((o) => console.log(o.properties.get('region')))
 
-        var tp = this.lookup('tpCombo'),
-            lines = this.lookup('lineCombo'),
-            pos = regionCombo.getSelectedRecord().get('pos').split(' ');
+        let tp = this.lookup('tpCombo'),
+            lines = this.lookup('lineCombo');
 
-        IM.provider.Map.ymap.setCenter(pos, 15);
+        IM.provider.Map.ymap.setCenter(pos.split(' '), 15);
 
-        $.get('http://stat.fun.co.ua/geocode.php', {
-            action: 'getMapTps',
-            region: regionCombo.getValue()
-        }).done((data) => {
-            tp.store.loadData(data);
-            tp.setValue(null);
-            lines.store.removeAll();
-            lines.setValue(null);
+        tp.store.loadData(this.data['2'].filter( item => item.pid == regionId));
+        tp.setValue(null);
+        lines.store.removeAll();
+        lines.setValue(null);
 
-            this.loadPillars(regionCombo.getValue());
-        })
+        this.loadPillars(regionId);
     },
 
     bindLines: function(regionCombo) {
-        var tp = this.lookup('tpCombo'),
+        var tpId = this.lookup('tpCombo').getValue(),
             lines = this.lookup('lineCombo');
 
-        $.get('http://stat.fun.co.ua/geocode.php', {
-            action: 'getMapLines',
-            tp: tp.getValue()
-        }).done((data) => {
-            lines.store.loadData(data);
-            lines.setValue(null);
-        })
+        lines.store.loadData(this.data['3'].filter( item => item.pid == tpId));
+        lines.setValue(null);
     },
 
     enableAddingPillar: function (combo) {
-        this.lookup('addFiberButton').setDisabled(Ext.isEmpty(combo.getValue()));
+        this.lookup('addPillarBtn').setDisabled(Ext.isEmpty(combo.getValue()));
     },
 
     addPillar: function () {
-        var cursor = IM.provider.Map.ymap.cursors.push('crosshair');
+        let cursor = IM.provider.Map.ymap.cursors.push('crosshair');
 
         IM.provider.Map.ymap.events.once('click', (e) => {
             cursor.remove();
-            var position = e.get('coords'),
+            let position = e.get('coords'),
                 placeMark = this.createPillar(position, {
                     tp: this.lookup('tpCombo').getValue(),
                     line: this.lookup('lineCombo').getValue(),
-                    region: this.lookup('regionCombo').getValue(),
-                    description: '...',
-                    iconContent: '1'
+                    region: this.lookup('region').getValue(),
+                    box: this.lookup('boxTypeCombo').getValue(),
+                    description: this.lookup('selectedPillarDescription').getValue(),
+                    iconContent: this.lookup('selectedPillarName').getValue()
                 }, {
-                    preset: 'islands#redIcon'
+                    preset: 'islands#violetCircleIcon'
                 });
 
+            this.submitPillarData(placeMark).done(response => {
+                if (response.rowId) placeMark.properties.set('rowId', response.rowId);
 
-            this.setPlaceMarkSelected(placeMark);
-            placeMark.editor.startEditing();
+                this.setPlaceMarkSelected(placeMark);
+                this.movePillar();
+            });
 
         });
     },
 
     createPillar: function (position, data, preset) {
-        var placeMark = new ymaps.Placemark(position, Ext.apply({
+        let placeMark = new ymaps.Placemark(position, Ext.apply({
             type: 'regionPillar'
         }, data), preset );
 
@@ -115,40 +128,62 @@ Ext.define('IM.view.PillarsController', {
         return placeMark;
     },
 
-    setPlaceMarkSelected: function (placeMark) {
+    setPlaceMarkSelected: function (placeMark, event) {
         this.selectedPillar = placeMark;
         this.lookup('selectedPillarDescription').setValue(placeMark.properties.get('description'));
         this.lookup('selectedPillarName').setValue(placeMark.properties.get('iconContent'));
+        this.lookup('boxTypeCombo').setValue(placeMark.properties.get('box'));
+
+        this.setLineTp(
+            placeMark.properties.get('line'),
+            placeMark.properties.get('tp')
+        );
+
+        if (event) {
+            this.mapContainer.fireEvent('pillarSelected', event.originalEvent);
+        }
+    },
+
+    setLineTp: function (lineId, tpId) {
+        let tp = this.lookup('tpCombo'),
+            lines = this.lookup('lineCombo');
+
+        tp.setValue(tpId);
+        lines.store.loadData(this.data['3'].filter( item => item.pid === tpId));
+        lines.setValue(lineId);
+        this.lookup('addPillarBtn').setDisabled(false);
     },
 
     savePillar: function () {
-        var name = this.lookup('selectedPillarName').getValue(),
-            pos = this.selectedPillar.geometry.getCoordinates(),
-            data = Ext.apply({
-                pos: pos[0] + " " + pos[1]
-            }, this.selectedPillar.properties._data);
-
         this.selectedPillar.properties.set('description', this.lookup('selectedPillarDescription').getValue());
-        this.selectedPillar.properties.set('iconContent', name);
+        this.selectedPillar.properties.set('iconContent', this.lookup('selectedPillarName').getValue());
+        this.selectedPillar.properties.set('tp', this.lookup('tpCombo').getValue());
+        this.selectedPillar.properties.set('line', this.lookup('lineCombo').getValue());
+        this.selectedPillar.properties.set('box', this.lookup('boxTypeCombo').getValue());
 
-        this.submitPillarData(data).done((response) => {
+        this.submitPillarData(this.selectedPillar).done(response => {
             if (response.rowId) this.selectedPillar.properties.set('rowId', response.rowId);
-            this.selectedPillar.options.set('preset', "islands#blueIcon");
+            this.selectedPillar.options.unset('iconColor');
             this.selectedPillar.editor.stopEditing();
         });
     },
 
-    submitPillarData: function (data) {
+    submitPillarData: function (pillar) {
+        let pos = pillar.geometry.getCoordinates(),
+            props = pillar.properties._data,
+            data = {
+                name: props.iconContent,
+                pos: pos[0] + " " + pos[1]
+            };
+
         return $.post('http://stat.fun.co.ua/geocode.php', {
             action: 'insertMapPillar',
-            data: JSON.stringify(Ext.apply({
-                name: data.iconContent
-            }, data))
+            data: JSON.stringify(Ext.apply(data, props))
         })
     },
 
     movePillar: function () {
-        this.selectedPillar.options.set('preset', "islands#redIcon");
+        this.selectedPillar.options.set('iconColor', "#ff0000");
         this.selectedPillar.editor.startEditing();
     },
 

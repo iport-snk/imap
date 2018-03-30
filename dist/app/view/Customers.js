@@ -3,11 +3,10 @@ Ext.define('IM.view.Customers', {
     requires: ['IM.view.CustomersController'],
     xtype: 'customers',
     controller: 'customers',
-    forceFit: true,
+    //forceFit: true,
     selModel: 'rowmodel',
-    plugins: {
-        ptype: 'rowediting',
-        clicksToEdit: 2
+    listeners: {
+        regionChange: 'onRegionChange'
     },
     store: Ext.create('Ext.data.Store', {
         fields: [
@@ -17,7 +16,9 @@ Ext.define('IM.view.Customers', {
             {name: 'building'},
             {name: 'region'},
             {name: 'pos'},
-            {name: 'placeMark'}
+            {name: 'placeMark'},
+            {name: 'box_id'},
+            {name: 'props', defaultValue: {}}
 
         ],
         proxy: {
@@ -29,15 +30,35 @@ Ext.define('IM.view.Customers', {
         autoLoad: false
     }),
     tbar:[{
-        text: 'Load',
+        text: 'Загрузить',
         itemId: 'btnLoadDistrict',
         cls: 'action-btn',
-        handler: 'loadStreets'
+        xtype: 'splitbutton',
+        menu: {
+            listeners: {
+                click: 'loadStreets'
+            },
+
+            items: [{
+                text: 'с. Мазiнки',
+                pos: '50.164558 31.360411',
+                regionId: 15
+            },{
+                text: 'с. Дiвiчки',
+                pos: '50.081975 31.280165',
+                regionId: 16
+            },{
+                text: 'с. Еркiвцi',
+                pos: '50.122750 31.254347',
+                regionId: 17
+            },{
+                text: 'с. Ковалин',
+                pos: '50.081715 31.211084',
+                regionId: 18
+            }]
+
+        }
     }, '->', {
-        text: 'Resolve',
-        handler: 'resolveAll',
-        cls: 'action-btn'
-    }, {
         text: 'Сохранить',
         handler: 'saveLocations',
         cls: 'action-btn'
@@ -55,9 +76,10 @@ Ext.define('IM.view.Customers', {
     },
     columns: [{
         header: 'Дог.',
-        width: 25,
+        width: 80,
         dataIndex: 'contract'
     },{
+        flex: 1,
         header: 'Улица',
         dataIndex: 'street',
         renderer: function (value) {
@@ -66,18 +88,18 @@ Ext.define('IM.view.Customers', {
         }
     },{
         header: 'Дом',
-        width: 25,
+        width: 60,
         dataIndex: 'building'
     },{
         sortable: false,
         menuDisabled: true,
         xtype: 'actioncolumn',
         align: 'center',
-        width: 30,
+        width: 60,
         items: [{
             iconCls: 'x-fa fa-map-marker',
             handler: 'onPlaceClick',
-            isDisabled: function() {
+            isDisabled: function () {
                 var record = arguments[4];
 
                 return Ext.isEmpty(record.get('pos'));
@@ -86,6 +108,15 @@ Ext.define('IM.view.Customers', {
             padding: '0 0 0 10',
             iconCls: 'x-fa fa-map',
             handler: 'onResolveClick'
+        }, {
+            padding: '0 0 0 10',
+            iconCls: 'x-fa fa-lightbulb',
+            handler: 'onHighlightRelationClick',
+            isDisabled: function () {
+                var record = arguments[4];
+
+                return Ext.isEmpty(record.get('box_id'));
+            }
         }]
     }]
 });

@@ -57,19 +57,19 @@ Ext.define('IM.Application', {
 
         this.cars = new IM.Cars();
 
-        var hz = new Horizon();
+        /*var hz = new Horizon();
         this.hz = {
             db: hz,
             geoObjects: hz('GeoObjects'),
             boxes: hz('Boxes'),
             splitters: hz('Splitters'),
             revisions: hz('Revisions')
-        };
+        };*/
         this.imap = IM.provider.Map;
 
         $.post('http://df.fun.co.ua:8080/api/session', {
-            email: 'oleg.k@iport.net.ua',
-            password: 'mutabor'
+            email: 'info@iport.net.ua',
+            password: 'Iport2018'
         }).done((data) => {
             Ext.create('IM.view.Viewport');
             this.socketStart();
