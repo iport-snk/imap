@@ -1,24 +1,25 @@
 Ext.define('IM.view.Pillars', {
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.form.Panel',
     requires: ['IM.view.PillarsController'],
     xtype: 'pillars',
     controller: 'pillars',
     forceFit: true,
+    trackResetOnLoad: true,
     listeners: {
-        regionChange: 'onRegionChange'
+        regionChange: 'onRegionChange',
+        dirtyChange: 'updateDataRecord'
     },
+    store: Ext.create('Ext.data.Store', {
+        fields: ['id', 'name', 'pos', 'region', 'tp', 'line', 'box', 'description', 'mark', 'pos', 'mark']
+    }),
     items: [{
         //docked: 'top',
         //xtype: 'toolbar',
         xtype: 'container',
         layout: 'hbox',
         items: [{
-            xtype: 'hidden',
-            name: 'regions',
-            reference: 'region'
-        },{
             xtype: 'textfield',
-            name: 'iconContent',
+            name: 'name',
             reference: 'selectedPillarName',
             width: 50,
             emptyText: '№',
@@ -47,7 +48,7 @@ Ext.define('IM.view.Pillars', {
         },{
             xtype: 'combobox',
             reference: 'lineCombo',
-            name: 'lines',
+            name: 'line',
             listeners: {
                 change: 'enableAddingPillar'
             },
@@ -94,10 +95,7 @@ Ext.define('IM.view.Pillars', {
             name: 'description',
             reference: 'selectedPillarDescription',
             flex: 1,
-            emptyText: 'Коментарий',
-            listeners: {
-                change: 'updatePillarProperty'
-            }
+            emptyText: 'Коментарий'
         }, {
             xtype: 'button',
             iconCls: 'x-fa fa-plus-circle',
@@ -111,7 +109,7 @@ Ext.define('IM.view.Pillars', {
         }, {
             xtype: 'button',
             iconCls: 'x-fa fa-save',
-            handler: 'savePillar'
+            handler: 'savePillars'
         }]
     }]
 });

@@ -53,6 +53,16 @@ Ext.define('IM.Application', {
         socket.onmessage = this.socketOnMessage.bind(this);
     },
 
+    toggleMask: function () {
+        if (!this.mask) {
+            this.mask = new Ext.LoadMask({
+                msg    : 'Saving ...',
+                target : Ext.ComponentQuery.query('viewport')[0]
+            })
+        }
+        this.mask.setVisible(!this.mask.isVisible());
+    },
+
     launch: function () {
 
         this.cars = new IM.Cars();

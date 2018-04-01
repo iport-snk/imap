@@ -34,7 +34,8 @@ Ext.define('IM.view.CustomersController', {
     },
 
     loadStreets: function (regionId) {
-        let grid = this.getView();
+        let grid = this.getView(),
+            store = grid.getStore();
 
         //var grid = this.lookup('grid');
         ymaps.geoQuery(IM.provider.Map.ymap.geoObjects)
@@ -44,33 +45,29 @@ Ext.define('IM.view.CustomersController', {
         //grid.getStore().getProxy().setUrl("http://stat.fun.co.ua/geocode.php?action=getAddresses&region=10");
 
         $.get("http://stat.fun.co.ua/geocode.php?action=getAddresses&region=" + regionId).then(data => {
-            grid.getStore().loadData(data);
-            grid.getStore().each(this.placeMark, this);
+            store.loadData(data);
+            store.each(this.placeMark, this);
+            store.commitChanges();
+
         })
     },
 
     onPlaceClick: function (data) {
-        var record = arguments[5];
+        let record = arguments[5],
+            marker = record.get('placeMark');
 
         if (record.get('placeMark')) {
-            var tr = arguments[6],
-                marker = $('.fa-map-marker', tr);
+            var tr = arguments[6];
 
-            if (marker.hasClass('red')) {
-                let mark = record.get('placeMark'),
-                    coords = mark.geometry.getCoordinates();
-
+            if (marker.editor.state.get('editing')) {
                 $('.fa-map-marker', tr).removeClass('red');
                 //mark.options.set('iconColor', '#1E98FF');
-                mark.options.unset('iconColor');
-                mark.editor.stopEditing();
-                record.set('pos', coords.reduce(
-                    (acc, value) => acc + " " + value
-                ));
+                marker.options.unset('iconColor');
+                marker.editor.stopEditing();
             } else {
                 $('.fa-map-marker', tr).addClass('red');
-                record.get('placeMark').options.set('iconColor', "#ff0000");
-                record.get('placeMark').editor.startEditing();
+                marker.options.set('iconColor', "#ff0000");
+                marker.editor.startEditing();
             }
 
         } else {
@@ -97,6 +94,7 @@ Ext.define('IM.view.CustomersController', {
             );
 
         icon.events.add('click', this.handleMarkClick.bind(this));
+        icon.events.add('dragend', this.updateMarkerPosition.bind(this, icon));
 
         IM.provider.Map.ymap.geoObjects.add(icon);
         record.set('placeMark', icon);
@@ -202,15 +200,17 @@ Ext.define('IM.view.CustomersController', {
 
     },
 
-
-
     onHighlightRelationClick: function () {
         let record = arguments[5],
             props = record.get('props');
 
         props.relation = IM.provider.Map.showRelation(record);
+    },
 
+    updateMarkerPosition: function (marker) {
+        let record = marker.properties.get('record'),
+            coords = marker.geometry.getCoordinates().reduce((accum, value) => accum + " " + value);
 
-
+        record.set('pos', coords);
     }
 });

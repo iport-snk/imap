@@ -10,6 +10,8 @@ Ext.define('IM.view.PillarsController', {
         this.loadMapObjects("2");
         this.loadMapObjects("3");
 
+
+
     },
 
     loadMapObjects: function (type) {
@@ -24,8 +26,10 @@ Ext.define('IM.view.PillarsController', {
     onRegionChange: function (record) {
         let regionId = record.get('id');
 
+        this.data.region = record;
         this.bindTp(regionId, record.get('pos'));
-        this.lookup('region').setValue(regionId);
+
+        this.loadPillars(regionId);
     },
 
 
@@ -42,23 +46,27 @@ Ext.define('IM.view.PillarsController', {
         $.get('http://stat.fun.co.ua/geocode.php', {
             action: 'getMapPillars',
             region: regionId
-        }).done((items) => {
-            items.forEach((data) => {
-                var position = data.pos.split(" ");
+        }).done((data) => {
+            let store = this.getView().store;
 
-                this.createPillar(position, {
-                    rowId: data.id,
-                    tp: data.tp,
-                    line: data.line,
-                    region: data.region,
-                    box: data.box,
-                    description: data.description,
-                    iconContent: data.name
-                }, {
-                    preset: 'islands#violetCircleIcon'
-                });
-            })
+            store.loadData(data);
+            store.each(record => {
+                let position = record.get('pos').split(" ");
 
+                record.set(
+                    "mark",
+                    this.createPillar(position, {
+                        record: record,
+                        iconContent: record.get('name')
+                    }, {
+                        preset: 'islands#violetCircleIcon'
+                    })
+                );
+            });
+            let newRecord = store.add({id: 0})[0];
+            store.commitChanges();
+
+            this.getView().getForm().loadRecord(newRecord);
         });
     },
 
@@ -74,8 +82,6 @@ Ext.define('IM.view.PillarsController', {
         tp.setValue(null);
         lines.store.removeAll();
         lines.setValue(null);
-
-        this.loadPillars(regionId);
     },
 
     bindLines: function(regionCombo) {
@@ -91,24 +97,29 @@ Ext.define('IM.view.PillarsController', {
     },
 
     addPillar: function () {
-        let cursor = IM.provider.Map.ymap.cursors.push('crosshair');
+        let cursor = IM.provider.Map.ymap.cursors.push('crosshair'),
+            record = this.getView().getForm().getRecord();
 
         IM.provider.Map.ymap.events.once('click', (e) => {
             cursor.remove();
             let position = e.get('coords'),
+                name = this.lookup('selectedPillarName').getValue(),
                 placeMark = this.createPillar(position, {
-                    tp: this.lookup('tpCombo').getValue(),
-                    line: this.lookup('lineCombo').getValue(),
-                    region: this.lookup('region').getValue(),
-                    box: this.lookup('boxTypeCombo').getValue(),
-                    description: this.lookup('selectedPillarDescription').getValue(),
-                    iconContent: this.lookup('selectedPillarName').getValue()
+                    iconContent: name
                 }, {
                     preset: 'islands#violetCircleIcon'
-                });
+                }),
+                data = Ext.apply({
+                    pos: position.reduce((acc, value) => acc + " " + value),
+                }, record.getData());
 
-            this.submitPillarData(placeMark).done(response => {
-                if (response.rowId) placeMark.properties.set('rowId', response.rowId);
+            this.insertPillarData(data).done(response => {
+                if (response.rowId) {
+                    record.set('id', response.rowId);
+                    record.set('mark', placeMark);
+
+                    placeMark.properties.set('record', record);
+                }
 
                 this.setPlaceMarkSelected(placeMark);
                 this.movePillar();
@@ -123,71 +134,96 @@ Ext.define('IM.view.PillarsController', {
         }, data), preset );
 
         placeMark.events.add('click', this.setPlaceMarkSelected.bind(this, placeMark));
+        placeMark.events.add('dragend', this.updateMarkerPosition.bind(this, placeMark));
         IM.provider.Map.ymap.geoObjects.add(placeMark);
 
         return placeMark;
     },
 
     setPlaceMarkSelected: function (placeMark, event) {
-        this.selectedPillar = placeMark;
-        this.lookup('selectedPillarDescription').setValue(placeMark.properties.get('description'));
-        this.lookup('selectedPillarName').setValue(placeMark.properties.get('iconContent'));
-        this.lookup('boxTypeCombo').setValue(placeMark.properties.get('box'));
+        let record = placeMark.properties.get('record');
 
-        this.setLineTp(
-            placeMark.properties.get('line'),
-            placeMark.properties.get('tp')
-        );
+        this.filterLines(record.get('tp'));
+        this.getView().getForm().loadRecord(record);
 
         if (event) {
             this.mapContainer.fireEvent('pillarSelected', event.originalEvent);
         }
     },
 
-    setLineTp: function (lineId, tpId) {
-        let tp = this.lookup('tpCombo'),
-            lines = this.lookup('lineCombo');
+    filterLines: function (tpId) {
+        let lines = this.lookup('lineCombo');
 
-        tp.setValue(tpId);
         lines.store.loadData(this.data['3'].filter( item => item.pid === tpId));
-        lines.setValue(lineId);
         this.lookup('addPillarBtn').setDisabled(false);
     },
 
-    savePillar: function () {
-        this.selectedPillar.properties.set('description', this.lookup('selectedPillarDescription').getValue());
-        this.selectedPillar.properties.set('iconContent', this.lookup('selectedPillarName').getValue());
-        this.selectedPillar.properties.set('tp', this.lookup('tpCombo').getValue());
-        this.selectedPillar.properties.set('line', this.lookup('lineCombo').getValue());
-        this.selectedPillar.properties.set('box', this.lookup('boxTypeCombo').getValue());
-
-        this.submitPillarData(this.selectedPillar).done(response => {
-            if (response.rowId) this.selectedPillar.properties.set('rowId', response.rowId);
-            this.selectedPillar.options.unset('iconColor');
-            this.selectedPillar.editor.stopEditing();
+    savePillars: function () {
+        IM.app.toggleMask();
+        $.when(
+            this.updateMapPillars()
+        ).then(function( data ) {
+            IM.app.toggleMask();
         });
     },
 
-    submitPillarData: function (pillar) {
-        let pos = pillar.geometry.getCoordinates(),
-            props = pillar.properties._data,
-            data = {
-                name: props.iconContent,
-                pos: pos[0] + " " + pos[1]
-            };
+    updateMapPillars: function() {
+        let store = this.getView().store,
+            modified = store.getModifiedRecords(),
+            data = modified.map( record => {
+                let item = Ext.apply({}, record.getData());
 
+                delete item.mark;
+                return item;
+            });
+
+        store.commitChanges();
+        return $.post('http://stat.fun.co.ua/geocode.php', {
+            action: 'updateMapPillars',
+            data: JSON.stringify(data)
+        })
+    },
+
+    insertPillarData: function (data) {
+        delete data.mark;
+        delete data.id;
         return $.post('http://stat.fun.co.ua/geocode.php', {
             action: 'insertMapPillar',
-            data: JSON.stringify(Ext.apply(data, props))
+            data: JSON.stringify(data)
         })
     },
 
     movePillar: function () {
-        this.selectedPillar.options.set('iconColor', "#ff0000");
-        this.selectedPillar.editor.startEditing();
+        let selectedPillar = this.getView().getForm().getRecord().get('mark');
+
+        if (selectedPillar.editor.state.get('editing')) {
+            selectedPillar.options.unset('iconColor');
+            selectedPillar.editor.stopEditing();
+        } else {
+            selectedPillar.options.set('iconColor', "#ff0000");
+            selectedPillar.editor.startEditing();
+        }
     },
 
     updatePillarProperty: function (field) {
-        this.selectedPillar.properties.set(field.name, field.getValue());
+        let record = this.getView().getForm().getRecord();
+
+        if (record.get('mark')) {
+            record.get('mark').properties.set('iconContent', field.getValue());
+        }
+    },
+
+    updateMarkerPosition: function (marker) {
+        let record = marker.properties.get('record'),
+            coords = marker.geometry.getCoordinates().reduce((accum, value) => accum + " " + value);
+
+        record.set('pos', coords);
+    },
+
+    updateDataRecord: function(form, isDirty) {
+        if (isDirty) {
+            form.updateRecord();
+            form.loadRecord(form.getRecord());
+        }
     }
 });
