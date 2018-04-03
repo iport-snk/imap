@@ -46,7 +46,7 @@ Ext.define('IM.view.Pillars', {
             queryMode: 'local',
             editable: false,
             forceSelection: true,
-            width: 90,
+            width: 100,
             emptyText: 'ТП ...'
         },{
             xtype: 'combobox',

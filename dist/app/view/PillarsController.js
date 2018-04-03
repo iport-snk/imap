@@ -133,7 +133,9 @@ Ext.define('IM.view.PillarsController', {
     createPillar: function (position, data, preset) {
         let placeMark = new ymaps.Placemark(position, Ext.apply({
             type: 'regionPillar'
-        }, data), preset );
+        }, data), Ext.apply({
+            zIndex: 500
+        }, preset) );
 
         placeMark.events.add('click', this.setPlaceMarkSelected.bind(this, placeMark));
         placeMark.events.add('dragend', this.updateMarkerPosition.bind(this, placeMark));

@@ -45,7 +45,7 @@ Ext.define('IM.Cars', {
             options: placeMark.options,
             timerId: null
         });
-
+        placeMark.options.set('zIndex', 900);
         placeMark.updatePosition(position);
         IM.provider.Map.ymap.geoObjects.add(placeMark);
 

@@ -92,6 +92,7 @@ Ext.define('IM.view.CustomersController', {
                     record: record,
                     type: 'regionUser'
                 }, {
+                    zIndex: 400,
                     preset: 'islands#yellowHomeCircleIcon'
                     //preset: 'islands#blueStretchyIcon'
                     //iconGlyph: 'home',
