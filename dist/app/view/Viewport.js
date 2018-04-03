@@ -37,19 +37,38 @@ Ext.define('IM.view.Viewport', {
             pack: 'start',
             align: 'stretch'
         },
+        controller: 'customersCommon',
         header: {
-            itemPosition: 0,    // before panel title
-            //itemPosition: 1, // after panel title
+            title: 'Объкты',
+
+            //itemPosition: 0,    // before panel title
+            itemPosition: 1, // after panel title
             //itemPosition: 2, // after pin tool
             items: [{
-                xtype: 'button',
-                text: 'Сохранить',
-                itemId: 'btnSaveMap'
+                xtype: 'combobox',
+                name: 'regions',
+                reference: 'regionCombo',
+                store:  {
+                    type: 'store',
+                    fields: ['id', 'name', 'pos', 'pid'],
+                    autoLoad: false
+                },
+                listeners: {
+                    boxready: 'bindRegions',
+                    change: 'onRegionChange'
+                },
+                valueField: 'id',
+                editable: false,
+                forceSelection: true,
+                displayField: 'name',
+                typeAhead: true,
+                queryMode: 'local',
+                flex: 1,
+                emptyText: 'Село ...'
             },{
                 xtype: 'button',
-                text: 'Загрузить',
-                margin: '0 0 0 20',
-                itemId: 'btnLoadMap'
+                iconCls: 'x-fa fa-save',
+                handler: 'saveAll'
             }]
         },
 
@@ -57,70 +76,17 @@ Ext.define('IM.view.Viewport', {
         width: 400,
 
 
-        items:[{
-             xtype: 'tabpanel',
-             //tabBarHeaderPosition: 0,
-             //titleAlign: 'right',
-
+        items: [{
+            reference: 'pillars',
+            xtype: 'pillars',
+            border: false
+        },{
             flex: 1,
-            items: [{
-                title: 'Сеть',
-                xtype: 'ObjectList'
-
-            },{
-                title: 'Объекты',
-                xtype: 'panel',
-                layout: 'card',
-                itemId: 'ObjectView',
-                defaults: { border:false },
-                items: [{
-                    xtype: 'panel'
-                },{
-                    xtype: 'Box'
-                },{
-                    xtype: 'Cable'
-                }]
-            },{
-
-                title: 'Клиенты',
-                xtype: 'panel',
-                controller: 'customersCommon',
-                layout: {
-                    type: 'vbox',
-                    pack: 'start',
-                    align: 'stretch'
-                },
-                tbar:[{
-                    xtype: 'combobox',
-                    name: 'regions',
-                    reference: 'regionCombo',
-                    store:  {
-                        type: 'store',
-                        fields: ['id', 'name', 'pos', 'pid'],
-                        autoLoad: false
-                    },
-                    listeners: {
-                        boxready: 'bindRegions',
-                        change: 'onRegionChange'
-                    },
-                    valueField: 'id',
-                    editable: false,
-                    forceSelection: true,
-                    displayField: 'name',
-                    typeAhead: true,
-                    queryMode: 'local',
-                    flex: 1,
-                    emptyText: 'Село ...'
-                }],
-                items: [{
-                    xtype: 'pillars'
-                },{
-                    flex: 1,
-                    xtype: 'customers'
-                }]
-            }]
-
+            reference: 'customers',
+            xtype: 'customers',
+            border: false
         }],
+
 
 
         listeners: {

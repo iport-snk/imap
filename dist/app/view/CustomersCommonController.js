@@ -19,10 +19,23 @@ Ext.define('IM.view.CustomersCommonController', {
     },
 
     bindRegions: function (combo) {
-        $.get('http://stat.fun.co.ua/geocode.php', {
+        $.get(IM.app.api, {
             action: 'getMapRegions'
         }).done((data) => {
             combo.store.loadData(data)
+        });
+    },
+
+    saveAll: function () {
+        let pillars = this.lookup('pillars'),
+            customers = this.lookup('customers');
+
+        IM.app.toggleMask();
+        $.when(
+            pillars.updateMapPillars(),
+            customers.saveLocations()
+        ).then(function( data ) {
+            IM.app.toggleMask();
         });
     }
 });

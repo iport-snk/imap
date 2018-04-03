@@ -5,6 +5,7 @@ Ext.define('IM.view.CustomersController', {
 
     init: function () {
         Ext.ComponentQuery.query('Map')[0].on('pillarSelected', this.onPillarClickCtrl.bind(this));
+        this.getView().saveLocations = this.saveLocations.bind(this);
     },
 
     onRegionChange: function (record) {
@@ -15,8 +16,8 @@ Ext.define('IM.view.CustomersController', {
         let grid = this.getView(),
             records = grid.selModel.selected.items,
             isCtrl = event.domEvent.originalEvent.ctrlKey,
-            marker = event.target,
-            pillarId = marker.properties.get('rowId');
+            pillar = event.target,
+            pillarId = pillar.properties.get('record').get('id');
 
         if (records.length === 0) return;
 
@@ -28,7 +29,10 @@ Ext.define('IM.view.CustomersController', {
             if (!Ext.isEmpty(props['relation'])) {
                 IM.provider.Map.ymap.geoObjects.remove(props.relation);
             }
-            props.relation = IM.provider.Map.showRelation(record);
+            props.relation = IM.provider.Map.showRelation(
+                record.get('pos').split(" "),
+                pillar.geometry.getCoordinates()
+            );
             record.set('props', props);
         }
     },
@@ -44,7 +48,10 @@ Ext.define('IM.view.CustomersController', {
 
         //grid.getStore().getProxy().setUrl("http://stat.fun.co.ua/geocode.php?action=getAddresses&region=10");
 
-        $.get("http://stat.fun.co.ua/geocode.php?action=getAddresses&region=" + regionId).then(data => {
+        $.get(IM.app.api, {
+            action: 'getAddresses',
+            region: regionId
+        }).then(data => {
             store.loadData(data);
             store.each(this.placeMark, this);
             store.commitChanges();
@@ -184,7 +191,7 @@ Ext.define('IM.view.CustomersController', {
     },
 
     saveLocations: function () {
-        var grid = this.getView(),
+        let grid = this.getView(),
             records = grid.getStore().getModifiedRecords(),
             locations = records.map(_ => ({
                 id: _.get('id'),
@@ -192,19 +199,25 @@ Ext.define('IM.view.CustomersController', {
                 box_id: _.get('box_id')
             }));
 
-        $.post("http://stat.fun.co.ua/geocode.php", {
+        grid.getStore().commitChanges();
+        return $.post(IM.app.api, {
             action: 'updateLocations',
             positions: JSON.stringify(locations)
-        }).done(_ => grid.getStore().commitChanges());
-
-
+        });
     },
 
     onHighlightRelationClick: function () {
         let record = arguments[5],
+            userPosition = record.get('placeMark').geometry.getCoordinates(),
+
+            // TODO FixMe - Move Customer and Pillar stores to the store folder to make it available outside components
+            pillarPosition = Ext.ComponentQuery
+                .query('pillars')[0]
+                .store.findRecord('id', record.get('box_id'))
+                .get('pos').split(" "),
             props = record.get('props');
 
-        props.relation = IM.provider.Map.showRelation(record);
+        props.relation = IM.provider.Map.showRelation(userPosition, pillarPosition);
     },
 
     updateMarkerPosition: function (marker) {

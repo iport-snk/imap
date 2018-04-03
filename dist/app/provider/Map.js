@@ -439,13 +439,9 @@ Ext.define("IM.provider.Map", {
             .removeFromMap(IM.provider.Map.ymap);
     },
 
-    showRelation: function (record) {
-        let boxId = record.get('box_id'),
-            boxPosition = ymaps.geoQuery(IM.provider.Map.ymap.geoObjects).search(`properties.rowId==${boxId}`)
-                .get(0).geometry.getCoordinates(),
-            userPosition = record.get('placeMark').geometry.getCoordinates(),
-            line = new ymaps.Polyline([
-                boxPosition, userPosition
+    showRelation: function (pos1, pos2) {
+        let line = new ymaps.Polyline([
+                pos1, pos2
             ], {
                 searchTag: "relation"
             }, {

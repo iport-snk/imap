@@ -11,6 +11,7 @@ Ext.define('IM.Application', {
         'IM.Cars'
 
     ],
+    api: 'https://iport.net.ua/imap/api/geocode.php',
 
     models: ['Box', 'MapObject', 'Car'],
     controllers: ['ObjectList', 'Box', 'HZ', 'Splitters'],
@@ -83,6 +84,17 @@ Ext.define('IM.Application', {
         }).done((data) => {
             Ext.create('IM.view.Viewport');
             this.socketStart();
+        });
+
+        navigator.geolocation.watchPosition(position => {
+            this.cars.updatePositions([{
+                deviceId: 1111,
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+                attributes: {
+                    motion: false
+                }
+            }]);
         });
 
     }

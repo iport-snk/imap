@@ -10,12 +10,11 @@ Ext.define('IM.view.PillarsController', {
         this.loadMapObjects("2");
         this.loadMapObjects("3");
 
-
-
+        this.getView().updateMapPillars = this.updateMapPillars.bind(this);
     },
 
     loadMapObjects: function (type) {
-        $.get('http://stat.fun.co.ua/geocode.php', {
+        $.get(IM.app.api, {
             action: 'getMapObjects',
             type: type
         }).done((data) => {
@@ -43,7 +42,7 @@ Ext.define('IM.view.PillarsController', {
             .search('properties.type=="regionPillar"')
             .removeFromMap(IM.provider.Map.ymap);
 
-        $.get('http://stat.fun.co.ua/geocode.php', {
+        $.get(IM.app.api, {
             action: 'getMapPillars',
             region: regionId
         }).done((data) => {
@@ -178,7 +177,7 @@ Ext.define('IM.view.PillarsController', {
             });
 
         store.commitChanges();
-        return $.post('http://stat.fun.co.ua/geocode.php', {
+        return $.post(IM.app.api, {
             action: 'updateMapPillars',
             data: JSON.stringify(data)
         })
@@ -187,7 +186,7 @@ Ext.define('IM.view.PillarsController', {
     insertPillarData: function (data) {
         delete data.mark;
         delete data.id;
-        return $.post('http://stat.fun.co.ua/geocode.php', {
+        return $.post(IM.app.api, {
             action: 'insertMapPillar',
             data: JSON.stringify(data)
         })

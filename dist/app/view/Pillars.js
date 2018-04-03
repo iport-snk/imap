@@ -10,7 +10,7 @@ Ext.define('IM.view.Pillars', {
         dirtyChange: 'updateDataRecord'
     },
     store: Ext.create('Ext.data.Store', {
-        fields: ['id', 'name', 'pos', 'region', 'tp', 'line', 'box', 'description', 'mark', 'pos', 'mark']
+        fields: ['id', 'name', 'pos', 'region', 'tp', 'line', 'box', 'description', 'mark', 'pos']
     }),
     items: [{
         //docked: 'top',
@@ -21,7 +21,10 @@ Ext.define('IM.view.Pillars', {
             xtype: 'textfield',
             name: 'name',
             reference: 'selectedPillarName',
-            width: 50,
+            fieldLabel: 'Столб',
+            flex: 1,
+            labelWidth: 50,
+            labelAlign: 'right',
             emptyText: '№',
             listeners: {
                 change: 'updatePillarProperty'
@@ -43,7 +46,7 @@ Ext.define('IM.view.Pillars', {
             queryMode: 'local',
             editable: false,
             forceSelection: true,
-            width: 100,
+            width: 90,
             emptyText: 'ТП ...'
         },{
             xtype: 'combobox',
@@ -62,7 +65,7 @@ Ext.define('IM.view.Pillars', {
             editable: false,
             forceSelection: true,
             queryMode: 'local',
-            width: 100,
+            width: 90,
             emptyText: 'Л ...'
         },{
             xtype: 'combobox',
@@ -106,10 +109,6 @@ Ext.define('IM.view.Pillars', {
             xtype: 'button',
             iconCls: 'x-fa fa-map-marker',
             handler: 'movePillar'
-        }, {
-            xtype: 'button',
-            iconCls: 'x-fa fa-save',
-            handler: 'savePillars'
         }]
     }]
 });
