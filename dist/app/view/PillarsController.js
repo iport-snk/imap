@@ -62,7 +62,10 @@ Ext.define('IM.view.PillarsController', {
                     })
                 );
             });
-            let newRecord = store.add({id: 0})[0];
+            let newRecord = store.add({
+                id: 0,
+                region: this.data.region.get('id')
+            })[0];
             store.commitChanges();
 
             this.getView().getForm().loadRecord(newRecord);
